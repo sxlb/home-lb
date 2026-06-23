@@ -1,0 +1,40 @@
+{
+  "name": "home-sxlb-backend",
+  "version": "1.0.0",
+  "description": "home-sxlb 后台服务 - 可视化配置管理 + 版本更新",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "init-db": "tsx src/scripts/init-db.ts"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "better-sqlite3": "^9.4.3",
+    "dotenv": "^16.4.1",
+    "multer": "^1.4.5-lts.1",
+    "axios": "^1.6.7",
+    "archiver": "^6.0.1",
+    "unzipper": "^0.10.14",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "winston": "^3.11.0",
+    "chalk": "^4.1.2",
+    "sharp": "^0.33.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/better-sqlite3": "^7.6.8",
+    "@types/multer": "^1.4.11",
+    "@types/archiver": "^6.0.2",
+    "@types/unzipper": "^0.10.9",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20.11.16",
+    "typescript": "^5.3.3",
+    "tsx": "^4.7.1"
+  }
+}

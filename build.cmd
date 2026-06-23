@@ -7,7 +7,7 @@ echo.
 
 set "ROOT=%~dp0"
 
-echo [1/5] Building frontend...
+echo [1/6] Building frontend...
 cd /d "%ROOT%frontend"
 call npm install
 if %errorlevel% neq 0 (
@@ -23,7 +23,7 @@ if %errorlevel% neq 0 (
 )
 echo Frontend build OK.
 
-echo [2/5] Building admin...
+echo [2/6] Building admin...
 cd /d "%ROOT%admin"
 call npm install
 if %errorlevel% neq 0 (
@@ -39,7 +39,7 @@ if %errorlevel% neq 0 (
 )
 echo Admin build OK.
 
-echo [3/5] Building backend...
+echo [3/6] Building backend...
 cd /d "%ROOT%backend"
 call npm install
 if %errorlevel% neq 0 (
@@ -55,25 +55,17 @@ if %errorlevel% neq 0 (
 )
 echo Backend build OK.
 
-echo [4/5] Init database...
+echo [4/6] Init database...
 call npm run init-db
 if %errorlevel% neq 0 (
     echo Database init skipped or failed.
 )
 
-echo [5/5] Done!
+echo [5/6] Starting server...
+echo Server running at http://localhost:3001
+echo Press Ctrl+C to stop.
 echo.
-echo ========================================
-echo   Build Complete!
-echo ========================================
-echo.
-echo Start server:
-echo   cd backend ^&^& npm run dev    (dev mode)
-echo   cd backend ^&^& npm start      (production)
-echo.
-echo Open browser:
-echo   Frontend: http://localhost:3001
-echo   Admin:    http://localhost:3001/admin
-echo   Login:    admin / admin123
-echo.
+cd /d "%ROOT%backend"
+call npm start
+
 pause

@@ -8,7 +8,7 @@ import { authenticateToken } from '../middleware/auth';
 const router = Router();
 
 // 获取系统信息
-router.get('/info', (req: Request, res: Response) => {
+router.get('/info', (_req: Request, res: Response) => {
   try {
     const db = getDatabase();
     
@@ -133,7 +133,7 @@ router.post('/import', authenticateToken, (req: Request, res: Response) => {
 });
 
 // 清理日志（需要认证）
-router.post('/logs/clean', authenticateToken, (req: Request, res: Response) => {
+router.post('/logs/clean', authenticateToken, (_req: Request, res: Response) => {
   try {
     const db = getDatabase();
     db.prepare('DELETE FROM update_logs').run();

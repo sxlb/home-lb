@@ -1,6 +1,5 @@
 import { Router, Request, Response } from 'express';
 import axios from 'axios';
-import archiver from 'archiver';
 import unzipper from 'unzipper';
 import fs from 'fs';
 import path from 'path';
@@ -11,7 +10,7 @@ import { authenticateToken } from '../middleware/auth';
 const router = Router();
 
 // 检查最新版本
-router.get('/check', async (req: Request, res: Response) => {
+router.get('/check', async (_req: Request, res: Response) => {
   try {
     const updateUrl = process.env.UPDATE_CHECK_URL;
     
@@ -66,8 +65,10 @@ router.get('/history', (_req: Request, res: Response) => {
 
 // 执行更新（需要认证）
 router.post('/do-update', authenticateToken, async (req: Request, res: Response) => {
+  let version = '';
   try {
-    const { downloadUrl, version } = req.body as { downloadUrl: string; version: string };
+    const { downloadUrl, version: reqVersion } = req.body as { downloadUrl: string; version: string };
+    version = reqVersion;
 
     if (!downloadUrl || !version) {
       return res.status(400).json({ success: false, message: '缺少必要参数' });
@@ -92,7 +93,7 @@ router.post('/do-update', authenticateToken, async (req: Request, res: Response)
     // 下载更新包
     logger.info(`开始下载更新包: ${version}`);
     const response = await axios.get(downloadUrl, { responseType: 'arraybuffer', timeout: 300000 });
-    
+
     const updateFile = path.join(backupDir, `update-${version}.zip`);
     fs.writeFileSync(updateFile, response.data);
 
@@ -137,7 +138,7 @@ router.post('/do-update', authenticateToken, async (req: Request, res: Response)
     });
   } catch (error: any) {
     logger.error('更新失败:', error);
-    
+
     const db = getDatabase();
     db.prepare('INSERT INTO update_logs (action, version, status, message) VALUES (?, ?, ?, ?)').run(
       'update_failed',

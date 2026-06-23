@@ -40,6 +40,9 @@ app.use('/api/upload', uploadRouter);
 app.use('/api/update', updateRouter);
 app.use('/api/system', systemRouter);
 
+// 后台管理 - 静态资源
+app.use('/admin', express.static(adminDist));
+
 // 后台管理 SPA
 app.get('/admin*', (req: express.Request, res: express.Response) => {
   res.sendFile(path.join(adminDist, 'index.html'));

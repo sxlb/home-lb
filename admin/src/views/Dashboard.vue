@@ -38,7 +38,7 @@
       <el-col :span="6">
         <el-card shadow="hover">
           <div class="stat-item">
-            <el-icon class="stat-icon" color="#f56c6c"><Database /></el-icon>
+            <el-icon class="stat-icon" color="#f56c6c"><DataAnalysis /></el-icon>
             <div class="stat-info">
               <p class="stat-value">{{ stats.databaseSize }}</p>
               <p class="stat-label">数据库大小</p>
@@ -90,7 +90,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Setting, Clock, Cpu, Database } from '@element-plus/icons-vue'
+import { Setting, Clock, Cpu, DataAnalysis } from '@element-plus/icons-vue'
 import axios from 'axios'
 
 const token = localStorage.getItem('admin_token')
@@ -101,7 +101,8 @@ const stats = ref({
   uptime: 0,
   settingsCount: 0,
   databaseSize: '0 B',
-  platform: ''
+  platform: '',
+  dataPath: ''
 })
 
 const updateInfo = ref({

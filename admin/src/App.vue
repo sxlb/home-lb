@@ -149,7 +149,7 @@ async function checkAuth() {
 // 登录
 async function handleLogin() {
   if (!loginFormRef.value) return
-  await loginFormRef.value.validate(async (valid) => {
+  await loginFormRef.value.validate(async (valid: boolean) => {
     if (!valid) return
     
     loading.value = true

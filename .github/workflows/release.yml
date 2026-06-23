@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 构建后端
+      - run: npm ci
+        working-directory: backend
+      - run: npm run build
+        working-directory: backend
+
+      # 构建前端
+      - run: npm ci
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
+
+      # 构建管理后台
+      - run: npm ci
+        working-directory: admin
+      - run: npm run build
+        working-directory: admin
+
+      # 打包产物
+      - name: Package release
+        run: |
+          mkdir -p release
+          cp -r backend/dist release/backend
+          cp -r frontend/dist release/frontend
+          cp -r admin/dist release/admin
+          cp backend/package.json release/backend/
+          cp backend/package-lock.json release/backend/
+
+      - name: Create zip archive
+        run: |
+          cd release
+          zip -r ../home-sxlb-${{ github.ref_name }}.zip .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: home-sxlb-*.zip
+          generate_release_notes: true

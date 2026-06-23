@@ -26,16 +26,16 @@
         <!-- 社交链接 -->
         <div class="social-links">
           <a v-if="settings.social_github" :href="settings.social_github" target="_blank" class="social-link">
-            <img src="/images/github.png" alt="GitHub">
+            <img src="/images/github.svg" alt="GitHub">
           </a>
           <a v-if="settings.social_bilibili" :href="settings.social_bilibili" target="_blank" class="social-link">
-            <img src="/images/bilibili.png" alt="B站">
+            <img src="/images/bilibili.svg" alt="B站">
           </a>
           <a v-if="settings.social_twitter" :href="settings.social_twitter" target="_blank" class="social-link">
-            <img src="/images/twitter.png" alt="Twitter">
+            <img src="/images/twitter.svg" alt="Twitter">
           </a>
           <a v-if="settings.social_email" :href="'mailto:' + settings.social_email" class="social-link">
-            <img src="/images/email.png" alt="Email">
+            <img src="/images/email.svg" alt="Email">
           </a>
         </div>
       </div>

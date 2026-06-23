@@ -65,7 +65,7 @@ router.post('/image', authenticateToken, upload.single('file'), (req: Request, r
 // 上传多张图片（需要认证）
 router.post('/images', authenticateToken, upload.array('files', 10), (req: Request, res: Response) => {
   try {
-    const files = req.files as multer.File[];
+    const files = req.files as Express.Multer.File[];
     if (!files || files.length === 0) {
       return res.status(400).json({ success: false, message: '未上传文件' });
     }

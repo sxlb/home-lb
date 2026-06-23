@@ -7,14 +7,17 @@ import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 
+// 图片存储目录
+const staticBase = process.env.STATIC_PATH || path.join(__dirname, '../../');
+const imagesDir = path.join(staticBase, 'frontend/public/images');
+
 // 配置文件上传
 const storage: StorageEngine = multer.diskStorage({
   destination: (_req: Request, _file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-    const uploadDir = path.join(__dirname, '../../../frontend/public/images');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
+    if (!fs.existsSync(imagesDir)) {
+      fs.mkdirSync(imagesDir, { recursive: true });
     }
-    cb(null, uploadDir);
+    cb(null, imagesDir);
   },
   filename: (_req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -89,7 +92,7 @@ router.post('/images', authenticateToken, upload.array('files', 10), (req: Reque
 router.delete('/image', authenticateToken, (req: Request, res: Response) => {
   try {
     const { filename } = req.body;
-    const filePath = path.join(__dirname, '../../../frontend/public/images', filename);
+    const filePath = path.join(imagesDir, filename);
 
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ success: false, message: '文件不存在' });
@@ -108,8 +111,6 @@ router.delete('/image', authenticateToken, (req: Request, res: Response) => {
 // 获取图片列表
 router.get('/images', (_req: Request, res: Response) => {
   try {
-    const imagesDir = path.join(__dirname, '../../../frontend/public/images');
-    
     if (!fs.existsSync(imagesDir)) {
       return res.json({ success: true, data: [] });
     }

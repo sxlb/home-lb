@@ -8,58 +8,44 @@
 
 ## 环境要求
 
-- **Node.js** >= 18（[下载地址](https://nodejs.org)）
-- **npm** 随 Node.js 自带
+- **Node.js** >= 18（[下载地址](https://nodejs.org)）或 **Docker**
 
-## 安装步骤
+## 快速开始
 
-一共三步：**装依赖 → 初始化 → 启动**
+### 方式一：一键脚本（推荐）
 
 ```bash
-# 1. 安装所有依赖（只执行一次）
+# Windows
+build.cmd
+
+# Linux / macOS
+chmod +x scripts/install.sh
+./scripts/install.sh
+```
+
+### 方式二：Docker
+
+```bash
+docker compose up -d
+```
+
+### 方式三：手动
+
+```bash
 cd backend
 npm install
-
-# 2. 初始化数据库（只执行一次）
 npm run init-db
-
-# 3. 启动服务
 npm run dev
 ```
 
-启动后打开浏览器访问：
+启动后打开浏览器：
 
 | 页面 | 地址 |
 |------|------|
 | 前台主页 | `http://localhost:3001` |
 | 后台管理 | `http://localhost:3001/admin` |
 
-> 后台默认账号：**admin** / 密码：**admin123**
-
-## 一键构建（生产环境）
-
-如果前端代码有改动，需要重新构建：
-
-```bash
-# 构建前端
-cd frontend
-npm install
-npm run build
-
-# 构建管理后台
-cd admin
-npm install
-npm run build
-
-# 构建后端
-cd backend
-npm install
-npm run build
-
-# 启动
-cd backend
-npm start
-```
+> 默认账号：**admin** / 密码：**admin123**
 
 ## 功能一览
 
@@ -79,10 +65,14 @@ npm start
 
 ```
 home-sxlb/
-├── backend/     后端服务（Express + SQLite）
-├── frontend/    前台页面（Vue 3 + Vite）
-├── admin/       后台管理（Vue 3 + Element Plus）
-└── .github/     GitHub Actions 自动构建
+├── backend/         后端服务（Express + SQLite）
+├── frontend/        前台页面（Vue 3 + Vite）
+├── admin/           后台管理（Vue 3 + Element Plus）
+├── scripts/         部署脚本
+├── Dockerfile       Docker 镜像
+├── docker-compose.yml
+├── build.cmd        Windows 一键构建
+└── .github/         GitHub Actions 自动构建
 ```
 
 ## 技术栈

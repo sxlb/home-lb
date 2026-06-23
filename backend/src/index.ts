@@ -22,7 +22,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 静态文件 - 前端构建产物
-const frontendDist = path.join(__dirname, '../../frontend/dist');
+const staticBase = process.env.STATIC_PATH || path.join(__dirname, '../../');
+const frontendDist = path.join(staticBase, 'frontend/dist');
+const adminDist = path.join(staticBase, 'admin/dist');
 app.use(express.static(frontendDist));
 
 // 日志中间件
@@ -39,7 +41,6 @@ app.use('/api/update', updateRouter);
 app.use('/api/system', systemRouter);
 
 // 后台管理 SPA
-const adminDist = path.join(__dirname, '../../admin/dist');
 app.get('/admin*', (req: express.Request, res: express.Response) => {
   res.sendFile(path.join(adminDist, 'index.html'));
 });

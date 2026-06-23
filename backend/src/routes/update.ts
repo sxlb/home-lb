@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import { logger } from '../utils/logger';
 import { getDatabase } from '../config/database';
+import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 
@@ -63,10 +64,10 @@ router.get('/history', (req: Request, res: Response) => {
   }
 });
 
-// 执行更新
-router.post('/do-update', async (req: Request, res: Response) => {
+// 执行更新（需要认证）
+router.post('/do-update', authenticateToken, async (req: Request, res: Response) => {
   try {
-    const { downloadUrl, version } = req.body;
+    const { downloadUrl, version } = req.body as { downloadUrl: string; version: string };
 
     if (!downloadUrl || !version) {
       return res.status(400).json({ success: false, message: '缺少必要参数' });
@@ -162,8 +163,8 @@ router.get('/logs', (req: Request, res: Response) => {
   }
 });
 
-// 回滚到指定版本
-router.post('/rollback', (req: Request, res: Response) => {
+// 回滚到指定版本（需要认证）
+router.post('/rollback', authenticateToken, (req: Request, res: Response) => {
   try {
     const { versionId } = req.body;
 

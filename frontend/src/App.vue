@@ -194,6 +194,14 @@ async function fetchSettings() {
           siteLinks.value = []
         }
       }
+      
+      // 解析功能开关
+      enableFeatures.value = {
+        weather: allSettings.enable_weather === 'true',
+        hitokoto: allSettings.enable_hitokoto === 'true',
+        music: allSettings.enable_music === 'true' || !!allSettings.music_playlist_id,
+        siteStart: !!allSettings.site_start
+      }
     }
   } catch (error) {
     console.error('获取设置失败:', error)
@@ -254,9 +262,10 @@ onMounted(() => {
   updateTime()
   timeInterval = setInterval(updateTime, 1000)
   
-  fetchSettings()
-  if (enableFeatures.value.hitokoto) fetchHitokoto()
-  if (enableFeatures.value.weather) fetchWeather()
+  fetchSettings().then(() => {
+    if (enableFeatures.value.hitokoto) fetchHitokoto()
+    if (enableFeatures.value.weather) fetchWeather()
+  })
 })
 
 onUnmounted(() => {

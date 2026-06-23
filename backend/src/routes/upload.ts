@@ -1,31 +1,32 @@
 import { Router, Request, Response } from 'express';
-import multer from 'multer';
+import multer, { StorageEngine, Options, FileFilterCallback } from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { logger } from '../utils/logger';
+import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 
 // 配置文件上传
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+const storage: StorageEngine = multer.diskStorage({
+  destination: (req: Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
     const uploadDir = path.join(__dirname, '../../../frontend/public/images');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
     cb(null, uploadDir);
   },
-  filename: (req, file, cb) => {
+  filename: (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const ext = path.extname(file.originalname);
     cb(null, `upload-${uniqueSuffix}${ext}`);
   }
 });
 
-const upload = multer({
+const uploadOptions: Options = {
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-  fileFilter: (req, file, cb) => {
+  fileFilter: (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
@@ -33,10 +34,12 @@ const upload = multer({
       cb(new Error('仅支持 JPG、PNG、GIF、WebP 格式图片'));
     }
   }
-});
+};
 
-// 上传图片
-router.post('/image', upload.single('file'), (req: Request, res: Response) => {
+const upload = multer(uploadOptions);
+
+// 上传图片（需要认证）
+router.post('/image', authenticateToken, upload.single('file'), (req: Request, res: Response) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, message: '未上传文件' });
@@ -59,10 +62,10 @@ router.post('/image', upload.single('file'), (req: Request, res: Response) => {
   }
 });
 
-// 上传多张图片
-router.post('/images', upload.array('files', 10), (req: Request, res: Response) => {
+// 上传多张图片（需要认证）
+router.post('/images', authenticateToken, upload.array('files', 10), (req: Request, res: Response) => {
   try {
-    const files = req.files as Express.Multer.File[];
+    const files = req.files as multer.File[];
     if (!files || files.length === 0) {
       return res.status(400).json({ success: false, message: '未上传文件' });
     }
@@ -82,8 +85,8 @@ router.post('/images', upload.array('files', 10), (req: Request, res: Response) 
   }
 });
 
-// 删除图片
-router.delete('/image', (req: Request, res: Response) => {
+// 删除图片（需要认证）
+router.delete('/image', authenticateToken, (req: Request, res: Response) => {
   try {
     const { filename } = req.body;
     const filePath = path.join(__dirname, '../../../frontend/public/images', filename);

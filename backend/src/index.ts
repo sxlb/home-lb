@@ -26,7 +26,7 @@ const frontendDist = path.join(__dirname, '../../frontend/dist');
 app.use(express.static(frontendDist));
 
 // 日志中间件
-app.use((req, res, next) => {
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
   logger.info(`${req.method} ${req.path}`);
   next();
 });
@@ -39,12 +39,13 @@ app.use('/api/update', updateRouter);
 app.use('/api/system', systemRouter);
 
 // 后台管理 SPA
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(frontendDist, 'admin/index.html'));
+const adminDist = path.join(__dirname, '../../admin/dist');
+app.get('/admin*', (req: express.Request, res: express.Response) => {
+  res.sendFile(path.join(adminDist, 'index.html'));
 });
 
 // 前台 SPA（所有未匹配的路由）
-app.get('*', (req, res) => {
+app.get('*', (req: express.Request, res: express.Response) => {
   res.sendFile(path.join(frontendDist, 'index.html'));
 });
 

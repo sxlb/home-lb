@@ -10,11 +10,11 @@ const logDir = path.join(__dirname, '../../logs');
 const logFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.errors({ stack: true }),
-  winston.format.printf(({ level, message, timestamp, stack }) => {
-    if (stack) {
-      return `${timestamp} [${level.toUpperCase()}]: ${message}\n${stack}`;
+  winston.format.printf((info: { level: string; message: string; timestamp: string; stack?: string }) => {
+    if (info.stack) {
+      return `${info.timestamp} [${info.level.toUpperCase()}]: ${info.message}\n${info.stack}`;
     }
-    return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+    return `${info.timestamp} [${info.level.toUpperCase()}]: ${info.message}`;
   })
 );
 

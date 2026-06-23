@@ -3,6 +3,7 @@ import { logger } from '../utils/logger';
 import { getDatabase } from '../config/database';
 import fs from 'fs';
 import path from 'path';
+import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 
@@ -106,8 +107,8 @@ router.get('/export', (req: Request, res: Response) => {
   }
 });
 
-// 导入配置
-router.post('/import', (req: Request, res: Response) => {
+// 导入配置（需要认证）
+router.post('/import', authenticateToken, (req: Request, res: Response) => {
   try {
     const { settings } = req.body;
     
@@ -131,8 +132,8 @@ router.post('/import', (req: Request, res: Response) => {
   }
 });
 
-// 清理日志
-router.post('/logs/clean', (req: Request, res: Response) => {
+// 清理日志（需要认证）
+router.post('/logs/clean', authenticateToken, (req: Request, res: Response) => {
   try {
     const db = getDatabase();
     db.prepare('DELETE FROM update_logs').run();

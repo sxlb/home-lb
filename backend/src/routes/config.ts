@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { getDatabase } from '../config/database';
 import { logger } from '../utils/logger';
+import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 
@@ -43,8 +44,8 @@ router.get('/:key', (req: Request, res: Response) => {
   }
 });
 
-// 更新设置
-router.put('/:key', (req: Request, res: Response) => {
+// 更新设置（需要认证）
+router.put('/:key', authenticateToken, (req: Request, res: Response) => {
   try {
     const db = getDatabase();
     const { value } = req.body;
@@ -76,8 +77,8 @@ router.put('/:key', (req: Request, res: Response) => {
   }
 });
 
-// 批量更新设置
-router.put('/', (req: Request, res: Response) => {
+// 批量更新设置（需要认证）
+router.put('/', authenticateToken, (req: Request, res: Response) => {
   try {
     const db = getDatabase();
     const { settings } = req.body;
@@ -100,12 +101,48 @@ router.put('/', (req: Request, res: Response) => {
   }
 });
 
-// 重置为默认值
-router.post('/reset', (req: Request, res: Response) => {
+// 重置为默认值（需要认证）
+router.post('/reset', authenticateToken, (req: Request, res: Response) => {
   try {
     const db = getDatabase();
-    // 重置所有设置为默认值
-    db.prepare('UPDATE settings SET value = (SELECT value FROM settings WHERE key = settings.key)').run();
+    
+    const defaultSettings: Record<string, string> = {
+      site_name: '我的主页',
+      site_author: '作者',
+      site_description: '欢迎来到我的主页',
+      site_keywords: '个人主页,作品集',
+      site_url: 'https://example.com',
+      site_start: '2024-01-01',
+      social_github: '',
+      social_bilibili: '',
+      social_twitter: '',
+      social_email: '',
+      social_qq: '',
+      site_links: '[]',
+      icp_number: '',
+      police_number: '',
+      weather_tx_key: '',
+      weather_gd_key: '',
+      music_api: '',
+      music_server: 'netease',
+      music_playlist_id: '',
+      music_autoplay: 'false',
+      music_volume: '0.3',
+      wallpaper_type: '0',
+      wallpaper_count: '10',
+      enable_seasonal_effects: 'true',
+      enable_lyrics: 'true',
+      enable_weather: 'true',
+      enable_hitokoto: 'true',
+      theme_mode: 'system',
+      theme_primary_color: '#409eff'
+    };
+
+    const updateStmt = db.prepare('UPDATE settings SET value = ?, updated_at = CURRENT_TIMESTAMP WHERE key = ?');
+    
+    for (const [key, value] of Object.entries(defaultSettings)) {
+      updateStmt.run(value, key);
+    }
     
     logger.info('设置已重置');
     res.json({ success: true, message: '设置已重置' });

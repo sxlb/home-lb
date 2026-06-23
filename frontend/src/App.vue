@@ -129,7 +129,7 @@ const enableFeatures = ref({
 const currentTime = ref('')
 const currentDate = ref('')
 const siteUptime = ref('')
-let timeInterval: number
+let timeInterval: ReturnType<typeof setInterval>
 
 // 天气相关
 const weatherTemp = ref('--')

@@ -52,7 +52,7 @@ router.get('/check', async (req: Request, res: Response) => {
 });
 
 // 获取版本历史
-router.get('/history', (req: Request, res: Response) => {
+router.get('/history', (_req: Request, res: Response) => {
   try {
     const db = getDatabase();
     const history = db.prepare('SELECT * FROM version_history ORDER BY id DESC').all();
@@ -151,7 +151,7 @@ router.post('/do-update', authenticateToken, async (req: Request, res: Response)
 });
 
 // 获取更新日志
-router.get('/logs', (req: Request, res: Response) => {
+router.get('/logs', (_req: Request, res: Response) => {
   try {
     const db = getDatabase();
     const logs = db.prepare('SELECT * FROM update_logs ORDER BY id DESC LIMIT 50').all();

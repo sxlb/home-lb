@@ -64,7 +64,7 @@ function formatBytes(bytes: number): string {
 }
 
 // 健康检查
-router.get('/health', (req: Request, res: Response) => {
+router.get('/health', (_req: Request, res: Response) => {
   res.json({
     success: true,
     data: {
@@ -75,7 +75,7 @@ router.get('/health', (req: Request, res: Response) => {
 });
 
 // 导出配置
-router.get('/export', (req: Request, res: Response) => {
+router.get('/export', (_req: Request, res: Response) => {
   try {
     const db = getDatabase();
     const settings = db.prepare('SELECT key, value, type, group_name FROM settings').all() as any[];

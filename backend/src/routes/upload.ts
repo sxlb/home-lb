@@ -106,7 +106,7 @@ router.delete('/image', authenticateToken, (req: Request, res: Response) => {
 });
 
 // 获取图片列表
-router.get('/images', (req: Request, res: Response) => {
+router.get('/images', (_req: Request, res: Response) => {
   try {
     const imagesDir = path.join(__dirname, '../../../frontend/public/images');
     

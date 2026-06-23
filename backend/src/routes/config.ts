@@ -6,7 +6,7 @@ import { authenticateToken } from '../middleware/auth';
 const router = Router();
 
 // 获取所有设置（按分组）
-router.get('/', (req: Request, res: Response) => {
+router.get('/', (_req: Request, res: Response) => {
   try {
     const db = getDatabase();
     const settings = db.prepare('SELECT * FROM settings ORDER BY group_name, id').all();
@@ -102,7 +102,7 @@ router.put('/', authenticateToken, (req: Request, res: Response) => {
 });
 
 // 重置为默认值（需要认证）
-router.post('/reset', authenticateToken, (req: Request, res: Response) => {
+router.post('/reset', authenticateToken, (_req: Request, res: Response) => {
   try {
     const db = getDatabase();
     

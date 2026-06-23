@@ -195,11 +195,11 @@ async function fetchSettings() {
         }
       }
       
-      // 解析功能开关
+      // 解析功能开关（默认为启用状态）
       enableFeatures.value = {
-        weather: allSettings.enable_weather === 'true',
-        hitokoto: allSettings.enable_hitokoto === 'true',
-        music: allSettings.enable_music === 'true' || !!allSettings.music_playlist_id,
+        weather: allSettings.enable_weather !== 'false',
+        hitokoto: allSettings.enable_hitokoto !== 'false',
+        music: allSettings.enable_music !== 'false' || !!allSettings.music_playlist_id,
         siteStart: !!allSettings.site_start
       }
     }

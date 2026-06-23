@@ -134,6 +134,7 @@ router.post('/reset', authenticateToken, (req: Request, res: Response) => {
       enable_lyrics: 'true',
       enable_weather: 'true',
       enable_hitokoto: 'true',
+      enable_music: 'true',
       theme_mode: 'system',
       theme_primary_color: '#409eff'
     };

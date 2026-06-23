@@ -129,6 +129,7 @@ export async function initDatabase(): Promise<void> {
     { key: 'enable_lyrics', value: 'true', type: 'boolean', group_name: 'features', description: '歌词显示' },
     { key: 'enable_weather', value: 'true', type: 'boolean', group_name: 'features', description: '天气显示' },
     { key: 'enable_hitokoto', value: 'true', type: 'boolean', group_name: 'features', description: '一言' },
+    { key: 'enable_music', value: 'true', type: 'boolean', group_name: 'features', description: '音乐播放器' },
     
     // 主题设置
     { key: 'theme_mode', value: 'system', type: 'select', group_name: 'theme', description: '主题模式', options: 'system,light,dark,time' },

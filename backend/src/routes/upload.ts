@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import express, { Router, Request, Response } from 'express';
 import multer, { StorageEngine, Options, FileFilterCallback } from 'multer';
 import path from 'path';
 import fs from 'fs';

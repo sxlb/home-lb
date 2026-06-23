@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getDatabase } from '../config/database';
 import { logger } from '../utils/logger';
+import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
 
@@ -48,17 +49,10 @@ router.post('/login', async (req: Request, res: Response) => {
   }
 });
 
-// 获取当前用户信息
-router.get('/me', (req: Request, res: Response) => {
+// 获取当前用户信息（需要认证）
+router.get('/me', authenticateToken, (req: Request, res: Response) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).json({ success: false, message: '未登录' });
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default-secret') as any;
-
+    const decoded = (req as any).user;
     const db = getDatabase();
     const admin = db.prepare('SELECT id, username, role, created_at FROM admin WHERE id = ?').get(decoded.id);
 
@@ -68,25 +62,15 @@ router.get('/me', (req: Request, res: Response) => {
 
     res.json({ success: true, data: admin });
   } catch (error: any) {
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({ success: false, message: 'Token 无效' });
-    }
     logger.error('获取用户信息失败:', error);
     res.status(500).json({ success: false, message: '获取用户信息失败' });
   }
 });
 
-// 修改密码
-router.put('/password', (req: Request, res: Response) => {
+// 修改密码（需要认证）
+router.put('/password', authenticateToken, (req: Request, res: Response) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).json({ success: false, message: '未登录' });
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default-secret') as any;
-
+    const decoded = (req as any).user;
     const { oldPassword, newPassword } = req.body;
     const db = getDatabase();
 

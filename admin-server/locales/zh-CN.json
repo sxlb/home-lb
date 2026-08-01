@@ -52,6 +52,36 @@
     "saveSuccess": "前端默认设置保存成功",
     "resetSuccess": "已恢复代码默认值"
   },
+  "site": {
+    "title": "站点基本信息",
+    "descTitle": "简介文本"
+  },
+  "links": {
+    "title": "网站链接管理"
+  },
+  "social": {
+    "title": "社交链接管理"
+  },
+  "bg": {
+    "title": "背景图片配置"
+  },
+  "music": {
+    "title": "音乐播放器配置"
+  },
+  "weather": {
+    "title": "天气 API 配置",
+    "ttsTitle": "TTS 语音 API 配置"
+  },
+  "button": {
+    "saveSiteInfo": "保存站点信息",
+    "saveSiteLinks": "保存网站链接",
+    "saveSocialLinks": "保存社交链接",
+    "saveBgConfig": "保存背景配置",
+    "saveMusic": "保存音乐配置",
+    "saveWeatherTTS": "保存天气 & TTS 配置",
+    "saveDefaults": "保存前端默认设置",
+    "resetDefaults": "恢复代码默认值"
+  },
   "auth": {
     "title": "管理后台",
     "tokenPrompt": "请输入管理 Token",

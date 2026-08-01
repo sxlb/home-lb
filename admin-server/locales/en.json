@@ -52,6 +52,36 @@
     "saveSuccess": "Frontend defaults saved successfully",
     "resetSuccess": "Reset to code defaults"
   },
+  "site": {
+    "title": "Site Basic Info",
+    "descTitle": "Description Text"
+  },
+  "links": {
+    "title": "Site Links Management"
+  },
+  "social": {
+    "title": "Social Links Management"
+  },
+  "bg": {
+    "title": "Background Image Config"
+  },
+  "music": {
+    "title": "Music Player Config"
+  },
+  "weather": {
+    "title": "Weather API Config",
+    "ttsTitle": "TTS Voice API Config"
+  },
+  "button": {
+    "saveSiteInfo": "Save Site Info",
+    "saveSiteLinks": "Save Site Links",
+    "saveSocialLinks": "Save Social Links",
+    "saveBgConfig": "Save Background Config",
+    "saveMusic": "Save Music Config",
+    "saveWeatherTTS": "Save Weather & TTS Config",
+    "saveDefaults": "Save Frontend Defaults",
+    "resetDefaults": "Reset to code defaults"
+  },
   "auth": {
     "title": "Admin Panel",
     "tokenPrompt": "Please enter admin token",

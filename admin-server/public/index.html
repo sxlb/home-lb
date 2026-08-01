@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>無名の主页 · 管理后台</title>
+  <script src="https://cdn.jsdelivr.net/npm/i18next@23/umd/i18next.min.js"></script>
   <style>
     :root {
       --primary: #424242;
@@ -434,6 +435,14 @@
     .switch input:checked + .slider { background: var(--accent); }
     .switch input:checked + .slider::before { transform: translateX(18px); }
 
+    /* ============ 语言切换按钮 ============ */
+    .lang-switch { display: inline-flex; gap: 4px; margin-left: auto; }
+    .lang-switch button {
+      padding: 4px 8px; border: 1px solid var(--border); background: transparent;
+      color: var(--text); border-radius: 4px; cursor: pointer; font-size: 12px;
+    }
+    .lang-switch button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
     /* ============ 移动端响应式 ============ */
     @media (max-width: 768px) {
       .header { padding: 8px 10px; }
@@ -536,6 +545,10 @@
     <button class="menu-btn" onclick="toggleSidebar()">☰</button>
     <h1>無名の主页 · 管理后台</h1>
     <div class="actions">
+      <div class="lang-switch">
+        <button id="lang-zh" onclick="changeLanguage('zh-CN')">中文</button>
+        <button id="lang-en" onclick="changeLanguage('en')">EN</button>
+      </div>
       <span class="status-badge" id="statusBadge">未加载</span>
       <a href="/" target="_blank" class="btn btn-secondary btn-sm">主站预览</a>
       <button class="btn btn-primary btn-sm" onclick="reloadAll()">重新加载</button>
@@ -547,16 +560,16 @@
   <div class="container">
     <div class="sidebar" id="sidebar">
       <div class="nav-item active" data-tab="site" onclick="navigateTab('site')">
-        <span class="icon">🏠</span><span>站点信息</span>
+        <span class="icon">🏠</span><span data-i18n="nav.siteInfo">站点信息</span>
       </div>
       <div class="nav-item" data-tab="links" onclick="navigateTab('links')">
-        <span class="icon">🔗</span><span>网站链接</span>
+        <span class="icon">🔗</span><span data-i18n="nav.siteLinks">网站链接</span>
       </div>
       <div class="nav-item" data-tab="social" onclick="navigateTab('social')">
-        <span class="icon">💬</span><span>社交链接</span>
+        <span class="icon">💬</span><span data-i18n="nav.socialLinks">社交链接</span>
       </div>
       <div class="nav-item" data-tab="bg" onclick="navigateTab('bg')">
-        <span class="icon">🖼️</span><span>背景配置</span>
+        <span class="icon">🖼️</span><span data-i18n="nav.bgConfig">背景配置</span>
       </div>
       <div class="nav-item" data-tab="music" onclick="navigateTab('music')">
         <span class="icon">🎵</span><span>音乐配置</span>
@@ -565,7 +578,7 @@
         <span class="icon">🌤️</span><span>天气 & TTS</span>
       </div>
       <div class="nav-item" data-tab="defaults" onclick="navigateTab('defaults')">
-        <span class="icon">⚙️</span><span>前端默认设置</span>
+        <span class="icon">⚙️</span><span data-i18n="nav.defaults">前端默认设置</span>
       </div>
     </div>
 
@@ -573,7 +586,7 @@
       <!-- 站点信息 -->
       <div class="tab-content active" id="tab-site">
         <div class="card">
-          <h2>站点基本信息</h2>
+          <h2 data-i18n="site.title">站点基本信息</h2>
           <div class="form-grid">
             <div class="form-item">
               <label>站点名称 <span class="hint">VITE_SITE_NAME</span></label>
@@ -631,7 +644,7 @@
         </div>
 
         <div class="card">
-          <h2>简介文本</h2>
+          <h2 data-i18n="site.descTitle">简介文本</h2>
           <div class="form-grid">
             <div class="form-item">
               <label>问候语 <span class="hint">VITE_DESC_HELLO</span></label>
@@ -653,14 +666,14 @@
         </div>
 
         <div class="toolbar">
-          <button class="btn btn-primary" onclick="saveRuntimeConfig()">💾 保存站点信息</button>
+          <button class="btn btn-primary" onclick="saveRuntimeConfig()">💾 <span data-i18n="button.saveSiteInfo">保存站点信息</span></button>
         </div>
       </div>
 
       <!-- 网站链接 -->
       <div class="tab-content" id="tab-links">
         <div class="card">
-          <h2>网站链接管理</h2>
+          <h2 data-i18n="links.title">网站链接管理</h2>
           <p style="margin-bottom:12px;color:var(--text-secondary);font-size:13px;">
             图标支持三种格式：① 预设名 <code>Blog/Cloud/CompactDisc/Compass/Book/Fire/LaptopCode</code>；
             ② Iconify 格式 <code>prefix:name</code>（如 <code>mdi:github</code>）；
@@ -672,14 +685,14 @@
           </div>
         </div>
         <div class="toolbar">
-          <button class="btn btn-primary" onclick="saveSiteLinks()">💾 保存网站链接</button>
+          <button class="btn btn-primary" onclick="saveSiteLinks()">💾 <span data-i18n="button.saveSiteLinks">保存网站链接</span></button>
         </div>
       </div>
 
       <!-- 社交链接 -->
       <div class="tab-content" id="tab-social">
         <div class="card">
-          <h2>社交链接管理</h2>
+          <h2 data-i18n="social.title">社交链接管理</h2>
           <p style="margin-bottom:12px;color:var(--text-secondary);font-size:13px;">
             图标支持三种格式：① 图片路径（如 <code>/images/icon/github.png</code>）；
             ② Iconify 格式 <code>prefix:name</code>（如 <code>mdi:github</code>）；
@@ -691,14 +704,14 @@
           </div>
         </div>
         <div class="toolbar">
-          <button class="btn btn-primary" onclick="saveSocialLinks()">💾 保存社交链接</button>
+          <button class="btn btn-primary" onclick="saveSocialLinks()">💾 <span data-i18n="button.saveSocialLinks">保存社交链接</span></button>
         </div>
       </div>
 
       <!-- 背景配置 -->
       <div class="tab-content" id="tab-bg">
         <div class="card">
-          <h2>背景图片配置</h2>
+          <h2 data-i18n="bg.title">背景图片配置</h2>
           <p style="margin-bottom:12px;color:var(--text-secondary);font-size:13px;">
             修改壁纸数量后无需重新编译，只需确保 public/images/ 下有对应数量的 background[N].jpg 文件。
           </p>
@@ -714,14 +727,14 @@
           </div>
         </div>
         <div class="toolbar">
-          <button class="btn btn-primary" onclick="saveBgConfig()">💾 保存背景配置</button>
+          <button class="btn btn-primary" onclick="saveBgConfig()">💾 <span data-i18n="button.saveBgConfig">保存背景配置</span></button>
         </div>
       </div>
 
       <!-- 音乐配置 -->
       <div class="tab-content" id="tab-music">
         <div class="card">
-          <h2>音乐播放器配置</h2>
+          <h2 data-i18n="music.title">音乐播放器配置</h2>
           <div class="form-grid">
             <div class="form-item full">
               <label>Meting API 地址 <span class="hint">VITE_SONG_API</span></label>
@@ -767,14 +780,14 @@
           </div>
         </div>
         <div class="toolbar">
-          <button class="btn btn-primary" onclick="saveRuntimeConfig()">💾 保存音乐配置</button>
+          <button class="btn btn-primary" onclick="saveRuntimeConfig()">💾 <span data-i18n="button.saveMusic">保存音乐配置</span></button>
         </div>
       </div>
 
       <!-- 天气 & TTS -->
       <div class="tab-content" id="tab-weather">
         <div class="card">
-          <h2>天气 API 配置</h2>
+          <h2 data-i18n="weather.title">天气 API 配置</h2>
           <p style="margin-bottom:12px;color:var(--text-secondary);font-size:13px;">
             推荐自行申请腾讯位置服务 Key（免费、支持 IPv6）。留空将使用内置小米天气接口（不稳定）。
           </p>
@@ -795,7 +808,7 @@
         </div>
 
         <div class="card">
-          <h2>TTS 语音 API 配置</h2>
+          <h2 data-i18n="weather.ttsTitle">TTS 语音 API 配置</h2>
           <div class="form-grid">
             <div class="form-item full">
               <label>TTS API 地址 <span class="hint">VITE_TTS_API（留空则禁用实时语音）</span></label>
@@ -820,16 +833,16 @@
           </div>
         </div>
         <div class="toolbar">
-          <button class="btn btn-primary" onclick="saveRuntimeConfig()">💾 保存天气 & TTS 配置</button>
+          <button class="btn btn-primary" onclick="saveRuntimeConfig()">💾 <span data-i18n="button.saveWeatherTTS">保存天气 & TTS 配置</span></button>
         </div>
       </div>
 
       <!-- 前端默认设置 -->
       <div class="tab-content" id="tab-defaults">
         <div class="card">
-          <h2>前端默认设置</h2>
+          <h2 data-i18n="defaults.title">前端默认设置</h2>
           <p style="margin-bottom:12px;color:var(--text-secondary);font-size:13px;">
-            此处配置的值将作为<strong>新访客首次访问</strong>时的默认设置。已自行调整过设置的老用户不受影响（浏览器 localStorage 优先级更高）。留空则使用代码默认值。
+            <span data-i18n="defaults.descStart">此处配置的值将作为</span><strong>新访客首次访问</strong><span data-i18n="defaults.descEnd">时的默认设置。已自行调整过设置的老用户不受影响（浏览器 localStorage 优先级更高）。留空则使用代码默认值。</span>
           </p>
 
           <h3 class="section-title">🎨 壁纸与外观</h3>
@@ -851,6 +864,13 @@
                 <option value="bg">跟随背景</option>
                 <option value="light">浅色模式</option>
                 <option value="dark">深色模式</option>
+              </select>
+            </div>
+            <div class="default-item">
+              <label data-i18n="defaults.language">默认语言</label>
+              <select id="default_language">
+                <option value="zh-CN">简体中文</option>
+                <option value="en">English</option>
               </select>
             </div>
             <div class="default-item">
@@ -969,8 +989,8 @@
           </div>
         </div>
         <div class="toolbar">
-          <button class="btn btn-primary" onclick="saveDefaults()">💾 保存前端默认设置</button>
-          <button class="btn btn-secondary" onclick="resetDefaultsToCode()">↺ 恢复代码默认值</button>
+          <button class="btn btn-primary" onclick="saveDefaults()">💾 <span data-i18n="button.saveDefaults">保存前端默认设置</span></button>
+          <button class="btn btn-secondary" onclick="resetDefaultsToCode()">↺ <span data-i18n="button.resetDefaults">恢复代码默认值</span></button>
         </div>
       </div>
     </div>
@@ -1325,7 +1345,7 @@
     // ============ 前端默认设置 ============
     // 代码默认值（与 storeState 中的默认值保持一致）
     const CODE_DEFAULTS = {
-      coverType: 0, autoBGSwitchInterval: 2, seasonalEffects: true, theme: 'system',
+      coverType: 0, autoBGSwitchInterval: 2, seasonalEffects: true, theme: 'system', language: 'zh-CN',
       siteStartShow: true, musicClick: true, musicVolume: 0.3,
       playerLrcShow: true, footerBlur: true, footerProgressBar: true,
       playerAutoplay: true, playerLoop: 'all', playerOrder: 'random',
@@ -1341,7 +1361,7 @@
         const el = document.getElementById('default_' + k);
         if (el) el.checked = defaultsConfig[k] !== undefined ? !!defaultsConfig[k] : !!CODE_DEFAULTS[k];
       });
-      const selectKeys = ['coverType','autoBGSwitchInterval','theme','playerLoop','playerOrder'];
+      const selectKeys = ['coverType','autoBGSwitchInterval','theme','language','playerLoop','playerOrder'];
       selectKeys.forEach(k => {
         const el = document.getElementById('default_' + k);
         if (el) el.value = String(defaultsConfig[k] !== undefined ? defaultsConfig[k] : CODE_DEFAULTS[k]);
@@ -1363,6 +1383,7 @@
       out.coverType = Number(document.getElementById('default_coverType').value);
       out.autoBGSwitchInterval = Number(document.getElementById('default_autoBGSwitchInterval').value);
       out.theme = document.getElementById('default_theme').value;
+      out.language = document.getElementById('default_language').value;
       out.playerLoop = document.getElementById('default_playerLoop').value;
       out.playerOrder = document.getElementById('default_playerOrder').value;
       out.musicVolume = Number(document.getElementById('default_musicVolume').value);
@@ -1585,6 +1606,52 @@
     }
 
     reloadAll();
+  </script>
+
+  <script>
+    async function initI18n() {
+      const saved = localStorage.getItem('admin-lang') ||
+                    (navigator.language.startsWith('zh') ? 'zh-CN' : 'en');
+      try {
+        const [zh, en] = await Promise.all([
+          fetch('/admin/locales/zh-CN.json').then(r => r.json()),
+          fetch('/admin/locales/en.json').then(r => r.json())
+        ]);
+        i18next.init({
+          lng: saved,
+          fallbackLng: 'zh-CN',
+          resources: {
+            'zh-CN': { translation: zh },
+            en: { translation: en }
+          }
+        });
+        applyTranslations();
+        updateLangButtons(saved);
+      } catch (e) {
+        console.error('语言包加载失败，回退到内联文本', e);
+      }
+    }
+
+    function applyTranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = i18next.t(key);
+      });
+    }
+
+    function changeLanguage(lang) {
+      i18next.changeLanguage(lang);
+      localStorage.setItem('admin-lang', lang);
+      applyTranslations();
+      updateLangButtons(lang);
+    }
+
+    function updateLangButtons(lang) {
+      document.getElementById('lang-zh')?.classList.toggle('active', lang === 'zh-CN');
+      document.getElementById('lang-en')?.classList.toggle('active', lang === 'en');
+    }
+
+    initI18n();
   </script>
 </body>
 </html>

@@ -27,6 +27,7 @@ const CONFIGURABLE_DEFAULT_KEYS = [
   "playerDWRCATDBF",
   "playerDWRCPilfer",
   "playerRMMetadata",
+  "language",
 ] as const;
 
 export const storeState: MainState = {
@@ -87,6 +88,7 @@ export const storeState: MainState = {
   showProgressIcon: false, // 【状态】进度条图标显示状态
   showProgressIconState: 0, // 【状态】进度条图标持续显示状态，0: 未悬停不显示，1: 已悬停显示，2: 始终显示
   theme: "system", // 【开关】主题，"system"/"time"/"bg"/"light"/"dark"。
+  language: "zh-CN" as "zh-CN" | "en", // 【开关】界面语言
 };
 
 export const mainStore = defineStore("main", {
@@ -200,6 +202,7 @@ export const mainStore = defineStore("main", {
         'playerOrder',
         'webSpeech',
         'playerSpeechName',
+        'language',
         'playerTrLrc',
         'playerDWRCShow',
         'playerDWRCShowPro',

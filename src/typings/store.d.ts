@@ -53,4 +53,5 @@ export interface MainState {
     showProgressIcon: boolean;
     showProgressIconState: number;
     theme: "system" | "time" | "bg" | "light" | "dark";
+    language: "zh-CN" | "en";
 };

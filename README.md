@@ -8,6 +8,24 @@
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·&nbsp;遇到问题请在 Github 上提 issue ，需要帮助请在 Github 上发 discussion ，看到了会回复。除特殊情况外，<b>请不要直接通过其它社交方式联系酪灰！</b>酪灰不是客服，不提供售后服务，并没有那么多的时间来回复私聊。还请谅解！<p>
 >### 最后，喜欢本项目的话麻烦给个 STAR ！阿里嘎多~
 
+> [!NOTE]
+> ## 更新日志（2026-08-01）
+> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·&nbsp;本次更改由 **sxlb** 使用 [Trae](https://trae.cn/) 修改并推送到 [sxlb/home-lb](https://github.com/sxlb/home-lb) 仓库。<p>
+> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·&nbsp;详细文档请查阅 [项目文档](https://github.com/sxlb/home-lb/blob/master/docs/README.md)（共 15 篇，涵盖架构、配置、组件、API、部署等）。<p>
+>
+> #### 本次主要更改内容
+> - **部署合并**：将原双容器（Nginx + admin-server）部署合并为**单容器**架构，由 admin-server 统一提供主站、管理后台、API 服务，简化部署流程
+> - **管理后台**：新增"前端默认设置"功能（22 项可配置项），新访客默认值可在后台在线修改；UI 由表格改为卡片列表，适配移动端
+> - **Bug 修复**：
+>   - 修复 Dockerfile 非 root 用户无 `public/` 写权限导致后台保存失败
+>   - 修复健康检查依赖 `wget`（slim 镜像不含）导致容器始终 unhealthy
+>   - 修复 Player 快退/快进逻辑反转、PWA 更新语音文件路径错误
+>   - 补全 admin UI 缺失的 `autoBGSwitchInterval` 配置项
+> - **新增文档**：`docs/` 目录共 15 篇文档（架构→配置→组件→API→歌词→天气→语音→季节效果→部署→管理后台）
+> - **新增部署脚本**：Linux `deploy.sh`、Windows `deploy.ps1`、Docker 单容器 `docker-compose.yml`
+> - **清理冗余**：移除 `public/speechlocal/Yunxia/` 副本（40 个未使用 mp3）、自动生成文件等
+> - **维护**：`.gitignore` 补充运行时配置与 Vite 生成文件忽略规则
+
 <p>&nbsp;<p>
 
 > [!WARNING]

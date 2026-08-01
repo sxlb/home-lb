@@ -104,6 +104,18 @@ export default ({ mode }: { mode: string }): UserConfig => {
         server: {
             port: 3000,
             open: true,
+            // 开发模式代理：把管理后台与 API 转发到 admin-server（默认 12446）
+            // 启用后可通过 http://localhost:3000/admin 访问管理后台
+            proxy: {
+                '/admin': {
+                    target: 'http://localhost:12446',
+                    changeOrigin: true,
+                },
+                '/api': {
+                    target: 'http://localhost:12446',
+                    changeOrigin: true,
+                },
+            },
         },
         resolve: {
             alias: [

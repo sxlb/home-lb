@@ -1,6 +1,33 @@
 import { defineStore } from "pinia";
 import type { MainState } from "@/typings/store";
 import { validationPlugin, validationRules } from "@/store/plugins/validation";
+import { getDefaults } from "@/utils/config_check";
+
+// 可在后台管理配置默认值的设置项 key 列表
+const CONFIGURABLE_DEFAULT_KEYS = [
+  "coverType",
+  "autoBGSwitchInterval",
+  "seasonalEffects",
+  "theme",
+  "siteStartShow",
+  "musicClick",
+  "musicVolume",
+  "playerLrcShow",
+  "footerBlur",
+  "footerProgressBar",
+  "playerAutoplay",
+  "playerLoop",
+  "playerOrder",
+  "webSpeech",
+  "playerSpeechName",
+  "playerTrLrc",
+  "playerDWRCShow",
+  "playerDWRCShowPro",
+  "playerDWRCATDB",
+  "playerDWRCATDBF",
+  "playerDWRCPilfer",
+  "playerRMMetadata",
+] as const;
 
 export const storeState: MainState = {
   // 这些变量，非有能力的开发者请只操作【开关】项来实现个性化的默认设置，其余变量勿动！
@@ -63,12 +90,23 @@ export const storeState: MainState = {
 };
 
 export const mainStore = defineStore("main", {
-  state: (): MainState => (
+  state: (): MainState => {
     // 主要状态，使用这个方法是为了添加重置功能..烦诶，pinia 你还得努力啊，你不努力那...那..那就不努力叭..哼唧（）
-    JSON.parse(
-      JSON.stringify(storeState)
-    )
-  ),
+    const base: MainState = JSON.parse(JSON.stringify(storeState));
+    // 从后台管理配置（runtime-config.json 的 defaults 字段）注入默认值
+    // 仅覆盖后台已明确配置的开关项，未配置的保持代码默认值
+    // 注意：此处注入的值会被 persistedstate 用 localStorage 覆盖，仅对新访客（无 localStorage）生效
+    const defaults = getDefaults();
+    if (defaults && typeof defaults === 'object') {
+      for (const key of CONFIGURABLE_DEFAULT_KEYS) {
+        const v = defaults[key];
+        if (v !== undefined && v !== null && v !== '') {
+          (base as any)[key] = v;
+        }
+      }
+    }
+    return base;
+  },
   getters: {
     // 获取歌词
     getPlayerLrc(state) {

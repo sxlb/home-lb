@@ -1,9 +1,47 @@
-version: '3'
+# =============================================================================
+# 無名の主页 · Docker Compose（单容器）
+# =============================================================================
+# 同时提供：
+#   - 主站（Vue 3 SPA，端口 12446）
+#   - 管理后台（/admin）
+#   - 管理 API（/api/*）
+#
+# 用法：
+#   1. 复制 .env.deploy.example 为 .env.deploy 并按需修改
+#   2. docker compose --env-file .env.deploy up -d --build
+#   3. 访问 http://localhost:12446/        主站
+#                 http://localhost:12446/admin  管理后台
+#
+# 持久化配置（可选）：
+#   默认配置存储在镜像内 /app/public 下，重建镜像会丢失。
+#   如需持久化，取消下方 volumes 注释，bind mount 配置文件。
+# =============================================================================
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  home:
+    build: .
+    image: home:latest
+    container_name: home
+    restart: unless-stopped
     ports:
-      - "12445:12445"
+      - "${PORT:-12446}:12446"
+    environment:
+      - NODE_ENV=production
+      - ADMIN_TOKEN=${ADMIN_TOKEN:-}
+    # 如需持久化 admin-server 修改的配置，取消注释：
+    # volumes:
+    #   - ./public/runtime-config.json:/app/public/runtime-config.json
+    #   - ./public/siteLinks.json:/app/public/siteLinks.json
+    #   - ./public/socialLinks.json:/app/public/socialLinks.json
+    #   - ./public/images/config.json:/app/public/images/config.json
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:12446/api/all').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

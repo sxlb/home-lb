@@ -1,15 +1,18 @@
+# 主站 Dockerfile 构建时排除以下内容
 node_modules
 npm-debug.log
-Dockerfile*
-docker-compose*
-.dockerignore
 .git
 .github
 .gitignore
-README.md
-LICENSE
 .vscode
 dist
 build
 images
 script
+docs
+screenshots
+# admin-server 有独立 Dockerfile，compose 构建时会进入该目录
+# 此处仅作用于根目录 Dockerfile
+*.log
+.env
+.env.deploy

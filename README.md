@@ -89,12 +89,31 @@ pnpm build
 
 > 安装及配置 Docker 将不在此处说明，请自行解决
 
+采用**单容器**架构，由 `admin-server` 统一提供主站、管理后台、API 服务：
+
 ```bash
-# 构建
-docker build -t home .
-# 运行
-docker run -p 12445:12445 -d home
+# 复制环境变量示例
+cp scripts/.env.deploy.example .env.deploy
+
+# 修改 ADMIN_TOKEN（强烈建议）
+vim .env.deploy
+
+# 一行命令完成构建 + 启动（Docker 内部会执行 pnpm build）
+docker compose --env-file .env.deploy up -d --build
 ```
+
+启动后访问：
+
+- 主站：`http://localhost:12446/`
+- 管理后台：`http://localhost:12446/admin`（修改配置后主站刷新即生效，无需重新构建）
+
+### ⚙️ 一键部署脚本
+
+项目提供三种环境的部署脚本，详见 [scripts/README.md](./scripts/README.md)：
+
+- **Linux**：`sudo ADMIN_TOKEN=xxx ./scripts/deploy.sh deploy`
+- **Windows**：`.\scripts\deploy.ps1 deploy`
+- **Docker**：`docker compose --env-file .env.deploy up -d --build`
 
 ### ⚙️ Vercel 部署
 

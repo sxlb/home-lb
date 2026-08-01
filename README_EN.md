@@ -72,12 +72,18 @@ pnpm build
 
 > Installation and configuration of Docker will not be explained here, please solve it by yourself.
 
+Single-container architecture, `admin-server` serves the main site, admin panel, and API:
+
 ```bash
-# Build
-docker build -t home .
-# Run
-docker run -p 12445:12445 -d home
+# Copy env example
+cp scripts/.env.deploy.example .env.deploy
+
+# Build and start (pnpm build runs inside Docker)
+docker compose --env-file .env.deploy up -d --build
 ```
+
+- Main site: `http://localhost:12446/`
+- Admin panel: `http://localhost:12446/admin`
 
 ### ⚙️ Vercel Deploy
 

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="siteLinks[0]" class="links">
+  <div v-if="siteLinksList[0]" class="links">
     <div class="line">
       <Icon size="20" class="iconl">
         <Link />
@@ -9,7 +9,7 @@
       <span class="title" v-else>网站列表</span>
     </div>
     <!-- 网站列表 -->
-    <Swiper v-if="siteLinks[0]" :modules="[Pagination, Mousewheel]" :slides-per-view="1" :space-between="40"
+    <Swiper v-if="siteLinksList[0]" :modules="[Pagination, Mousewheel]" :slides-per-view="1" :space-between="40"
       :pagination="{
         el: '.swiper-pagination',
         clickable: true,
@@ -20,7 +20,7 @@
           <el-col v-for="(item, index) in site" :span="8" :key="'item-' + index">
             <div class="item cards" :style="index < 3 ? 'margin-bottom: 20px' : null" @click="jumpLink(item)">
               <Icon size="26">
-                <component :is="siteIcon[item.icon]" />
+                <WebIcon :icon="item.icon" :size="26" />
               </Icon>
               <span class="name text-truncate-ellipsis">{{ item.name }}</span>
             </div>
@@ -34,42 +34,50 @@
 
 <script setup lang="ts">
 import { Icon } from "@vicons/utils";
-// 可前往 https://www.xicons.org 自行挑选并在此处引入
-import { Link, Blog, CompactDisc, Cloud, Compass, Book, Fire, LaptopCode } from "@vicons/fa"; // 注意使用正确的类别
+import { Link } from "@vicons/fa";
 import { mainStore } from "@/store";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Mousewheel } from "swiper/modules";
-import siteLinks from "@/assets/siteLinks.json";
+import siteLinksFallback from "@/assets/siteLinks.json";
+import WebIcon from "@/components/WebIcon.vue";
 
 const store = mainStore();
-const siteLinksData = siteLinks as SiteLink[];
 declare const $openList: () => void;
 
+// icon 支持三种格式：
+//   1. 预设名：Blog / Cloud / CompactDisc / Compass / Book / Fire / LaptopCode（向后兼容）
+//   2. Iconify 格式：prefix:name，如 fa:github、mdi:home、tabler:brand-github
+//   3. 图片路径：以 / 或 http(s):// 开头，如 /images/icon/github.png
 interface SiteLink {
-  icon: keyof typeof siteIcon;
+  icon: string;
   name: string;
   link: string;
 }
 
+// 运行时加载网站链接，失败时回退到编译时 JSON
+const siteLinksData = ref<SiteLink[]>(siteLinksFallback as SiteLink[]);
+
+const loadSiteLinks = async () => {
+  try {
+    const resp = await fetch('/siteLinks.json', { cache: 'no-cache' });
+    if (resp.ok) {
+      siteLinksData.value = await resp.json() as SiteLink[];
+    }
+  } catch (e) {
+    console.warn('[siteLinks] 运行时加载失败，使用编译时数据', e);
+  }
+};
+
+onMounted(loadSiteLinks);
+
 // 计算网站链接
 const siteLinksList = computed(() => {
   const result: SiteLink[][] = [];
-  for (let i = 0; i < siteLinksData.length; i += 6) {
-    result.push(siteLinksData.slice(i, i + 6));
+  for (let i = 0; i < siteLinksData.value.length; i += 6) {
+    result.push(siteLinksData.value.slice(i, i + 6));
   };
   return result;
 });
-
-// 网站链接图标
-const siteIcon = {
-  Blog,
-  Cloud,
-  CompactDisc,
-  Compass,
-  Book,
-  Fire,
-  LaptopCode,
-};
 
 // 链接跳转
 const jumpLink = (data: SiteLink) => {

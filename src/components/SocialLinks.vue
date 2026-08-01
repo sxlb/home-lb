@@ -4,7 +4,8 @@
     <div class="link">
       <a v-for="item in socialLinks" :key="item.name" :href="item.url" target="_blank"
         @mouseenter="socialTip = item.tip" @mouseleave="socialTip = '通过这里联系我吧'">
-        <img class="icon" :src="item.icon" height="24" />
+        <!-- icon 支持三种格式：图片路径 / Iconify 格式(prefix:name) / 预设名 -->
+        <WebIcon class="icon" :icon="item.icon" :size="24" />
       </a>
     </div>
     <span class="tip" @dblclick="togglesocial">{{ socialTip }}</span>
@@ -12,13 +13,30 @@
 </template>
 
 <script setup lang="ts">
-import socialLinks from "@/assets/socialLinks.json";
+import socialLinksFallback from "@/assets/socialLinks.json";
 import { Speech, stopSpeech, SpeechLocal } from "@/utils/speech";
 import { mainStore } from "@/store";
+import WebIcon from "@/components/WebIcon.vue";
 
 const store = mainStore();
 // 社交链接提示
 const socialTip = ref("通过这里联系我吧");
+
+// 运行时加载社交链接，失败时回退到编译时 JSON
+const socialLinks = ref(socialLinksFallback);
+
+const loadSocialLinks = async () => {
+  try {
+    const resp = await fetch('/socialLinks.json', { cache: 'no-cache' });
+    if (resp.ok) {
+      socialLinks.value = await resp.json();
+    }
+  } catch (e) {
+    console.warn('[socialLinks] 运行时加载失败，使用编译时数据', e);
+  }
+};
+
+onMounted(loadSocialLinks);
 
 const togglesocial = () => {
   ElMessage({

@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>無名の主页 · 管理后台</title>
+  <style>
+    :root {
+      --primary: #424242;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --border: #e4e7ed;
+      --text: #303133;
+      --text-secondary: #606266;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .header h1 { font-size: 16px; font-weight: 600; }
+    .header .actions { display: flex; gap: 8px; align-items: center; }
+    .menu-btn {
+      display: none;
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+    .container { display: flex; min-height: calc(100vh - 53px); }
+    .sidebar {
+      width: 220px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 16px 0;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+    .nav-item {
+      padding: 12px 24px;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-item:hover { background: var(--bg); }
+    .nav-item.active {
+      border-left-color: var(--accent);
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      font-weight: 500;
+    }
+    .nav-item .icon { width: 16px; text-align: center; }
+    .content { flex: 1; padding: 20px; overflow-y: auto; }
+    .tab-content { display: none; max-width: 900px; margin: 0 auto; }
+    .tab-content.active { display: block; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .card h2 { font-size: 16px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-grid.full { grid-template-columns: 1fr; }
+    .form-item { display: flex; flex-direction: column; gap: 5px; }
+    .form-item.full { grid-column: 1 / -1; }
+    .form-item label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+    .form-item label .hint { color: #909399; font-weight: 400; font-size: 12px; }
+    .form-item input,
+    .form-item textarea,
+    .form-item select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      background: #fff;
+      color: var(--text);
+    }
+    .form-item input:focus,
+    .form-item textarea:focus,
+    .form-item select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+    }
+    .form-item textarea { resize: vertical; min-height: 60px; }
+    .btn {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: #f0f2f5; color: var(--text); }
+    .btn-secondary:hover { background: #e4e7ed; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .toolbar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    /* ============ 卡片列表（替代表格） ============ */
+    .list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .list-item {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .list-item:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+    }
+    .list-item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border);
+    }
+    .list-item-index {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .list-item-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      align-items: end;
+    }
+    .list-item-fields .form-item { gap: 4px; }
+    .list-item-fields .form-item label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .list-item-fields .form-item input,
+    .list-item-fields .form-item select {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .list-item-fields .form-item input:focus,
+    .list-item-fields .form-item select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    /* 图标字段特殊布局：输入 + 按钮并排 */
+    .list-item-fields .icon-field {
+      display: flex;
+      gap: 6px;
+      align-items: flex-end;
+    }
+    .list-item-fields .icon-field .form-item {
+      flex: 1;
+      min-width: 0;
+    }
+    .list-item-fields .icon-field .btn {
+      flex-shrink: 0;
+      height: 34px;
+    }
+    .icon-preview-wrap {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .icon-preview {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2px;
+      background: var(--bg);
+    }
+    .empty-tip {
+      text-align: center;
+      color: var(--text-secondary);
+      padding: 40px 20px;
+      font-size: 14px;
+      background: var(--bg);
+      border-radius: 8px;
+      border: 1px dashed var(--border);
+    }
+    .toast {
+      position: fixed;
+      top: 70px;
+      right: 16px;
+      left: 16px;
+      max-width: 400px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      z-index: 100;
+      animation: slideIn 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.warning { background: var(--warning); }
+    @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .link { color: var(--accent); text-decoration: none; font-size: 13px; }
+    .link:hover { text-decoration: underline; }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      background: #ecfdf5;
+      color: var(--success);
+    }
+    .empty-tip { color: #909399; font-size: 13px; text-align: center; padding: 20px; }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 90;
+    }
+    .overlay.active { display: block; }
+
+    /* ============ 图标选择器弹窗 ============ */
+    .icon-picker-overlay {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: center; justify-content: center;
+    }
+    .icon-picker-overlay.active { display: flex; }
+    .icon-picker {
+      background: var(--card);
+      border-radius: 10px;
+      width: 92%; max-width: 720px;
+      max-height: 86vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    .icon-picker-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
+    }
+    .icon-picker-header h3 { font-size: 15px; font-weight: 600; }
+    .icon-picker-close {
+      background: none; border: none; font-size: 24px; cursor: pointer;
+      color: var(--text-secondary); line-height: 1; padding: 0 4px;
+    }
+    .icon-picker-close:hover { color: var(--danger); }
+    .icon-picker-search {
+      display: flex; gap: 8px; padding: 12px 18px; border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .icon-picker-search input { flex: 1; min-width: 180px; }
+    .icon-picker-search select { width: auto; min-width: 150px; }
+    .icon-picker-current {
+      padding: 8px 18px; font-size: 13px; color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .icon-picker-current code {
+      background: var(--bg); padding: 2px 6px; border-radius: 4px;
+      font-family: "Consolas", "Monaco", monospace; color: var(--accent);
+      word-break: break-all;
+    }
+    .icon-picker-grid {
+      flex: 1; overflow-y: auto; padding: 12px 18px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 8px; align-content: start;
+    }
+    .icon-picker-empty {
+      grid-column: 1 / -1;
+      text-align: center; color: var(--text-secondary);
+      padding: 40px 0; font-size: 13px;
+    }
+    .icon-item {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 8px 4px; border: 1px solid transparent; border-radius: 6px;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .icon-item:hover { background: var(--bg); border-color: var(--border); }
+    .icon-item.selected { background: rgba(59,130,246,0.12); border-color: var(--accent); }
+    .icon-item img { width: 28px; height: 28px; }
+    .icon-item .icon-item-name {
+      font-size: 10px; color: var(--text-secondary);
+      max-width: 72px; overflow: hidden; text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .icon-picker-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 18px; border-top: 1px solid var(--border); gap: 8px; flex-wrap: wrap;
+    }
+    .icon-picker-info { font-size: 12px; color: var(--text-secondary); }
+    .icon-picker-tip {
+      padding: 10px 18px; font-size: 12px; color: var(--text-secondary);
+      background: var(--bg); border-radius: 0 0 10px 10px;
+      border-top: 1px solid var(--border); line-height: 1.7;
+    }
+    .icon-picker-tip a { color: var(--accent); }
+
+    /* ============ 表格内图标输入组 ============ */
+    .icon-input-group { display: flex; gap: 4px; align-items: center; }
+    .icon-input-group input { flex: 1; min-width: 80px; }
+    .icon-preview-wrap {
+      margin-top: 4px; display: flex; align-items: center; gap: 4px;
+      font-size: 11px; color: var(--text-secondary);
+    }
+    .icon-preview {
+      width: 20px; height: 20px; vertical-align: middle;
+      border: 1px solid var(--border); border-radius: 3px; padding: 2px;
+      background: var(--bg);
+    }
+
+    /* ============ 前端默认设置 ============ */
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 18px 0 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .defaults-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .default-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--bg);
+      border-radius: 6px;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .default-item select {
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 12px;
+      background: #fff;
+    }
+    /* Toggle switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #ccc;
+      border-radius: 22px;
+      transition: 0.3s;
+    }
+    .slider::before {
+      content: "";
+      position: absolute;
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    .switch input:checked + .slider { background: var(--accent); }
+    .switch input:checked + .slider::before { transform: translateX(18px); }
+
+    /* ============ 移动端响应式 ============ */
+    @media (max-width: 768px) {
+      .header { padding: 8px 10px; }
+      .header h1 { font-size: 14px; }
+      .header .actions { gap: 4px; }
+      /* 隐藏"主站预览"文字，只保留图标，节省空间 */
+      .header .actions .btn-sm[href] { padding: 6px 8px; font-size: 0; }
+      .header .actions .btn-sm[href]::before { content: "🌐"; font-size: 14px; }
+      .menu-btn { display: flex; width: 32px; height: 32px; }
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 49px;
+        bottom: 0;
+        width: 220px;
+        z-index: 100;
+        transform: translateX(-100%);
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .nav-item { padding: 11px 20px; font-size: 13px; }
+      .content { padding: 10px; }
+      .card { padding: 12px; margin-bottom: 12px; }
+      .card h2 { font-size: 15px; margin-bottom: 12px; padding-bottom: 8px; }
+      .form-grid { grid-template-columns: 1fr; gap: 12px; }
+      .btn { padding: 7px 14px; font-size: 13px; }
+      .btn-sm { padding: 4px 8px; font-size: 11px; }
+      .toolbar { gap: 6px; margin-bottom: 12px; }
+      .status-badge { font-size: 11px; padding: 1px 6px; }
+      .toast { top: 60px; right: 10px; left: 10px; font-size: 13px; padding: 10px 14px; max-width: none; }
+
+      /* 卡片列表移动端：单列布局 */
+      .list-item-fields {
+        grid-template-columns: 1fr;
+      }
+      .list-item-fields .icon-field {
+        flex-wrap: wrap;
+      }
+
+      /* 图标选择器弹窗移动端优化 */
+      .icon-picker {
+        width: 96%;
+        max-width: none;
+        max-height: 90vh;
+        margin: 0;
+        border-radius: 8px;
+      }
+      .icon-picker-header { padding: 12px 14px; }
+      .icon-picker-header h3 { font-size: 14px; }
+      .icon-picker-search {
+        flex-direction: column;
+        padding: 10px 14px;
+        gap: 6px;
+      }
+      .icon-picker-search input,
+      .icon-picker-search select {
+        width: 100%;
+        min-width: 0;
+      }
+      .icon-picker-search .btn { width: 100%; }
+      .icon-picker-current { padding: 6px 14px; font-size: 12px; }
+      .icon-picker-grid {
+        padding: 10px 14px;
+        grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+        gap: 6px;
+      }
+      .icon-item { padding: 6px 2px; }
+      .icon-item img { width: 24px; height: 24px; }
+      .icon-item .icon-item-name { font-size: 9px; max-width: 56px; }
+      .icon-picker-footer {
+        padding: 8px 14px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .icon-picker-footer > div {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1.2fr;
+        gap: 6px;
+      }
+      .icon-picker-footer .btn { padding: 8px 6px; font-size: 12px; }
+      .icon-picker-info { text-align: center; font-size: 11px; }
+      .icon-picker-tip { padding: 8px 14px; font-size: 11px; line-height: 1.6; }
+      .icon-picker-tip code { font-size: 10px; }
+    }
+
+    /* 超小屏（<375px）：进一步压缩 */
+    @media (max-width: 374px) {
+      .header h1 { font-size: 13px; }
+      .header .actions .btn-sm { padding: 4px 6px; }
+      .card { padding: 10px; }
+      .card h2 { font-size: 14px; }
+      .icon-picker-grid { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); }
+      .icon-item img { width: 22px; height: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+    <h1>無名の主页 · 管理后台</h1>
+    <div class="actions">
+      <span class="status-badge" id="statusBadge">未加载</span>
+      <a href="/" target="_blank" class="btn btn-secondary btn-sm">主站预览</a>
+      <button class="btn btn-primary btn-sm" onclick="reloadAll()">重新加载</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <div class="container">
+    <div class="sidebar" id="sidebar">
+      <div class="nav-item active" data-tab="site" onclick="navigateTab('site')">
+        <span class="icon">🏠</span><span>站点信息</span>
+      </div>
+      <div class="nav-item" data-tab="links" onclick="navigateTab('links')">
+        <span class="icon">🔗</span><span>网站链接</span>
+      </div>
+      <div class="nav-item" data-tab="social" onclick="navigateTab('social')">
+        <span class="icon">💬</span><span>社交链接</span>
+      </div>
+      <div class="nav-item" data-tab="bg" onclick="navigateTab('bg')">
+        <span class="icon">🖼️</span><span>背景配置</span>
+      </div>
+      <div class="nav-item" data-tab="music" onclick="navigateTab('music')">
+        <span class="icon">🎵</span><span>音乐配置</span>
+      </div>
+      <div class="nav-item" data-tab="weather" onclick="navigateTab('weather')">
+        <span class="icon">🌤️</span><span>天气 & TTS</span>
+      </div>
+      <div class="nav-item" data-tab="defaults" onclick="navigateTab('defaults')">
+        <span class="icon">⚙️</span><span>前端默认设置</span>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- 站点信息 -->
+      <div class="tab-content active" id="tab-site">
+        <div class="card">
+          <h2>站点基本信息</h2>
+          <div class="form-grid">
+            <div class="form-item">
+              <label>站点名称 <span class="hint">VITE_SITE_NAME</span></label>
+              <input id="VITE_SITE_NAME" />
+            </div>
+            <div class="form-item">
+              <label>作者 <span class="hint">VITE_SITE_AUTHOR</span></label>
+              <input id="VITE_SITE_AUTHOR" />
+            </div>
+            <div class="form-item">
+              <label>自定义名 <span class="hint">VITE_SITE_MAIN_NAME</span></label>
+              <input id="VITE_SITE_MAIN_NAME" />
+            </div>
+            <div class="form-item">
+              <label>站点关键词 <span class="hint">VITE_SITE_KEYWORDS</span></label>
+              <input id="VITE_SITE_KEYWORDS" />
+            </div>
+            <div class="form-item full">
+              <label>站点简介 <span class="hint">VITE_SITE_DES</span></label>
+              <input id="VITE_SITE_DES" />
+            </div>
+            <div class="form-item">
+              <label>站点地址 <span class="hint">VITE_SITE_URL</span></label>
+              <input id="VITE_SITE_URL" />
+            </div>
+            <div class="form-item">
+              <label>建站日期 <span class="hint">YYYY-MM-DD 或 YYYY</span></label>
+              <input id="VITE_SITE_START" placeholder="2020-10-24" />
+            </div>
+            <div class="form-item">
+              <label>站点 Logo <span class="hint">VITE_SITE_LOGO</span></label>
+              <input id="VITE_SITE_LOGO" />
+            </div>
+            <div class="form-item">
+              <label>主页图标 <span class="hint">VITE_SITE_MAIN_LOGO</span></label>
+              <input id="VITE_SITE_MAIN_LOGO" />
+            </div>
+            <div class="form-item">
+              <label>Apple 图标 <span class="hint">VITE_SITE_APPLE_LOGO</span></label>
+              <input id="VITE_SITE_APPLE_LOGO" />
+            </div>
+            <div class="form-item">
+              <label>ICP 备案号 <span class="hint">留空则不显示</span></label>
+              <input id="VITE_SITE_ICP" />
+            </div>
+            <div class="form-item">
+              <label>公安备案 <span class="hint">VITE_SITE_MPS</span></label>
+              <input id="VITE_SITE_MPS" />
+            </div>
+            <div class="form-item">
+              <label>移动端备案 <span class="hint">VITE_SITE_MICP</span></label>
+              <input id="VITE_SITE_MICP" />
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>简介文本</h2>
+          <div class="form-grid">
+            <div class="form-item">
+              <label>问候语 <span class="hint">VITE_DESC_HELLO</span></label>
+              <input id="VITE_DESC_HELLO" />
+            </div>
+            <div class="form-item">
+              <label>简介内容 <span class="hint">VITE_DESC_TEXT</span></label>
+              <input id="VITE_DESC_TEXT" />
+            </div>
+            <div class="form-item">
+              <label>彩蛋问候语 <span class="hint">VITE_DESC_HELLO_OTHER</span></label>
+              <input id="VITE_DESC_HELLO_OTHER" />
+            </div>
+            <div class="form-item">
+              <label>彩蛋内容 <span class="hint">VITE_DESC_TEXT_OTHER</span></label>
+              <input id="VITE_DESC_TEXT_OTHER" />
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="saveRuntimeConfig()">💾 保存站点信息</button>
+        </div>
+      </div>
+
+      <!-- 网站链接 -->
+      <div class="tab-content" id="tab-links">
+        <div class="card">
+          <h2>网站链接管理</h2>
+          <p style="margin-bottom:12px;color:var(--text-secondary);font-size:13px;">
+            图标支持三种格式：① 预设名 <code>Blog/Cloud/CompactDisc/Compass/Book/Fire/LaptopCode</code>；
+            ② Iconify 格式 <code>prefix:name</code>（如 <code>mdi:github</code>）；
+            ③ 图片路径。点击 🔍 按钮从网络图标库搜索。
+          </p>
+          <div class="list-container" id="siteLinksBody"></div>
+          <div style="margin-top:10px">
+            <button class="btn btn-secondary btn-sm" onclick="addSiteLink()">+ 添加链接</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="saveSiteLinks()">💾 保存网站链接</button>
+        </div>
+      </div>
+
+      <!-- 社交链接 -->
+      <div class="tab-content" id="tab-social">
+        <div class="card">
+          <h2>社交链接管理</h2>
+          <p style="margin-bottom:12px;color:var(--text-secondary);font-size:13px;">
+            图标支持三种格式：① 图片路径（如 <code>/images/icon/github.png</code>）；
+            ② Iconify 格式 <code>prefix:name</code>（如 <code>mdi:github</code>）；
+            ③ 预设名。点击 🔍 按钮从网络图标库搜索。
+          </p>
+          <div class="list-container" id="socialLinksBody"></div>
+          <div style="margin-top:10px">
+            <button class="btn btn-secondary btn-sm" onclick="addSocialLink()">+ 添加链接</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="saveSocialLinks()">💾 保存社交链接</button>
+        </div>
+      </div>
+
+      <!-- 背景配置 -->
+      <div class="tab-content" id="tab-bg">
+        <div class="card">
+          <h2>背景图片配置</h2>
+          <p style="margin-bottom:12px;color:var(--text-secondary);font-size:13px;">
+            修改壁纸数量后无需重新编译，只需确保 public/images/ 下有对应数量的 background[N].jpg 文件。
+          </p>
+          <div class="form-grid">
+            <div class="form-item">
+              <label>PC 版壁纸数量 <span class="hint">bgImageCount</span></label>
+              <input id="bgImageCount" type="number" min="1" />
+            </div>
+            <div class="form-item">
+              <label>移动版壁纸数量 <span class="hint">bgImageCountP</span></label>
+              <input id="bgImageCountP" type="number" min="1" />
+            </div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="saveBgConfig()">💾 保存背景配置</button>
+        </div>
+      </div>
+
+      <!-- 音乐配置 -->
+      <div class="tab-content" id="tab-music">
+        <div class="card">
+          <h2>音乐播放器配置</h2>
+          <div class="form-grid">
+            <div class="form-item full">
+              <label>Meting API 地址 <span class="hint">VITE_SONG_API</span></label>
+              <input id="VITE_SONG_API" />
+            </div>
+            <div class="form-item">
+              <label>歌曲服务器 1 <span class="hint">netease / tencent</span></label>
+              <select id="VITE_SONG_SERVER">
+                <option value="netease">netease (网易云)</option>
+                <option value="tencent">tencent (QQ 音乐)</option>
+              </select>
+            </div>
+            <div class="form-item">
+              <label>歌曲服务器 2 <span class="hint">留空则不启用</span></label>
+              <select id="VITE_SONG_SERVER_SECOND">
+                <option value="">(不启用)</option>
+                <option value="netease">netease (网易云)</option>
+                <option value="tencent">tencent (QQ 音乐)</option>
+              </select>
+            </div>
+            <div class="form-item">
+              <label>播放类型 <span class="hint">VITE_SONG_TYPE</span></label>
+              <select id="VITE_SONG_TYPE">
+                <option value="playlist">playlist (播放列表)</option>
+                <option value="song">song (单曲)</option>
+                <option value="album">album (专辑)</option>
+                <option value="artist">artist (艺术家)</option>
+                <option value="search">search (搜索)</option>
+              </select>
+            </div>
+            <div class="form-item">
+              <label>播放 ID 1 <span class="hint">VITE_SONG_ID</span></label>
+              <input id="VITE_SONG_ID" />
+            </div>
+            <div class="form-item">
+              <label>播放 ID 2 <span class="hint">留空则不启用</span></label>
+              <input id="VITE_SONG_ID_SECOND" />
+            </div>
+            <div class="form-item full">
+              <label>Meting API 鉴权 SKEY <span class="hint">VITE_METING_SKEY（可选）</span></label>
+              <input id="VITE_METING_SKEY" />
+            </div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="saveRuntimeConfig()">💾 保存音乐配置</button>
+        </div>
+      </div>
+
+      <!-- 天气 & TTS -->
+      <div class="tab-content" id="tab-weather">
+        <div class="card">
+          <h2>天气 API 配置</h2>
+          <p style="margin-bottom:12px;color:var(--text-secondary);font-size:13px;">
+            推荐自行申请腾讯位置服务 Key（免费、支持 IPv6）。留空将使用内置小米天气接口（不稳定）。
+          </p>
+          <div class="form-grid">
+            <div class="form-item">
+              <label>腾讯位置服务 Key <span class="hint">VITE_TX_WEATHER_KEY</span></label>
+              <input id="VITE_TX_WEATHER_KEY" />
+            </div>
+            <div class="form-item">
+              <label>高德开放平台 Key <span class="hint">VITE_GD_WEATHER_KEY</span></label>
+              <input id="VITE_GD_WEATHER_KEY" />
+            </div>
+            <div class="form-item full">
+              <label>腾讯位置服务鉴权 SKEY <span class="hint">VITE_TX_WEATHER_SKEY（可选）</span></label>
+              <input id="VITE_TX_WEATHER_SKEY" />
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>TTS 语音 API 配置</h2>
+          <div class="form-grid">
+            <div class="form-item full">
+              <label>TTS API 地址 <span class="hint">VITE_TTS_API（留空则禁用实时语音）</span></label>
+              <input id="VITE_TTS_API" />
+            </div>
+            <div class="form-item">
+              <label>语音 <span class="hint">VITE_TTS_Voice</span></label>
+              <input id="VITE_TTS_Voice" placeholder="zh-CN-YunxiNeural" />
+            </div>
+            <div class="form-item">
+              <label>风格 <span class="hint">VITE_TTS_Style</span></label>
+              <input id="VITE_TTS_Style" placeholder="chat" />
+            </div>
+            <div class="form-item full">
+              <label>TTS 鉴权 SKEY <span class="hint">VITE_TTS_SKEY（可选）</span></label>
+              <input id="VITE_TTS_SKEY" />
+            </div>
+            <div class="form-item full">
+              <label>特殊文件 API 鉴权 SKEY <span class="hint">VITE_SFILE_SKEY（可选）</span></label>
+              <input id="VITE_SFILE_SKEY" />
+            </div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="saveRuntimeConfig()">💾 保存天气 & TTS 配置</button>
+        </div>
+      </div>
+
+      <!-- 前端默认设置 -->
+      <div class="tab-content" id="tab-defaults">
+        <div class="card">
+          <h2>前端默认设置</h2>
+          <p style="margin-bottom:12px;color:var(--text-secondary);font-size:13px;">
+            此处配置的值将作为<strong>新访客首次访问</strong>时的默认设置。已自行调整过设置的老用户不受影响（浏览器 localStorage 优先级更高）。留空则使用代码默认值。
+          </p>
+
+          <h3 class="section-title">🎨 壁纸与外观</h3>
+          <div class="defaults-grid">
+            <div class="default-item">
+              <label>壁纸种类</label>
+              <select id="default_coverType">
+                <option value="0">默认壁纸</option>
+                <option value="1">每日一图</option>
+                <option value="2">随机风景</option>
+                <option value="3">随机动漫</option>
+              </select>
+            </div>
+            <div class="default-item">
+              <label>主题模式</label>
+              <select id="default_theme">
+                <option value="system">跟随系统</option>
+                <option value="time">跟随时间</option>
+                <option value="bg">跟随背景</option>
+                <option value="light">浅色模式</option>
+                <option value="dark">深色模式</option>
+              </select>
+            </div>
+            <div class="default-item">
+              <label>季节特效</label>
+              <label class="switch"><input type="checkbox" id="default_seasonalEffects"><span class="slider"></span></label>
+            </div>
+            <div class="default-item">
+              <label>自动切换壁纸</label>
+              <select id="default_autoBGSwitchInterval">
+                <option value="0">不切换</option>
+                <option value="1">15 秒</option>
+                <option value="2">30 秒</option>
+                <option value="3">45 秒</option>
+              </select>
+            </div>
+          </div>
+
+          <h3 class="section-title">📋 信息显示</h3>
+          <div class="defaults-grid">
+            <div class="default-item">
+              <label>建站日期显示</label>
+              <label class="switch"><input type="checkbox" id="default_siteStartShow"><span class="slider"></span></label>
+            </div>
+            <div class="default-item">
+              <label>音乐点击打开面板</label>
+              <label class="switch"><input type="checkbox" id="default_musicClick"><span class="slider"></span></label>
+            </div>
+          </div>
+
+          <h3 class="section-title">🎵 底栏</h3>
+          <div class="defaults-grid">
+            <div class="default-item">
+              <label>底栏背景模糊</label>
+              <label class="switch"><input type="checkbox" id="default_footerBlur"><span class="slider"></span></label>
+            </div>
+            <div class="default-item">
+              <label>显示底栏进度条</label>
+              <label class="switch"><input type="checkbox" id="default_footerProgressBar"><span class="slider"></span></label>
+            </div>
+          </div>
+
+          <h3 class="section-title">▶️ 播放器</h3>
+          <div class="defaults-grid">
+            <div class="default-item">
+              <label>自动播放</label>
+              <label class="switch"><input type="checkbox" id="default_playerAutoplay"><span class="slider"></span></label>
+            </div>
+            <div class="default-item">
+              <label>播放顺序</label>
+              <select id="default_playerOrder">
+                <option value="list">顺序播放</option>
+                <option value="random">随机播放</option>
+              </select>
+            </div>
+            <div class="default-item">
+              <label>循环模式</label>
+              <select id="default_playerLoop">
+                <option value="all">列表循环</option>
+                <option value="one">单曲循环</option>
+                <option value="none">不循环</option>
+              </select>
+            </div>
+            <div class="default-item">
+              <label>音乐音量</label>
+              <input type="range" id="default_musicVolume" min="0" max="1" step="0.1" style="width:80px" oninput="document.getElementById('default_musicVolume_val').textContent=Math.round(this.value*100)+'%'">
+              <span id="default_musicVolume_val" style="font-size:12px;min-width:32px;text-align:right">30%</span>
+            </div>
+          </div>
+
+          <h3 class="section-title">📝 歌词</h3>
+          <div class="defaults-grid">
+            <div class="default-item">
+              <label>显示底栏歌词</label>
+              <label class="switch"><input type="checkbox" id="default_playerLrcShow"><span class="slider"></span></label>
+            </div>
+            <div class="default-item">
+              <label>逐字歌词解析</label>
+              <label class="switch"><input type="checkbox" id="default_playerDWRCShow"><span class="slider"></span></label>
+            </div>
+            <div class="default-item">
+              <label>逐字效果增强</label>
+              <label class="switch"><input type="checkbox" id="default_playerDWRCShowPro"><span class="slider"></span></label>
+            </div>
+            <div class="default-item">
+              <label>接入 AMLL TTML DB</label>
+              <label class="switch"><input type="checkbox" id="default_playerDWRCATDB"><span class="slider"></span></label>
+            </div>
+            <div class="default-item">
+              <label>AMLL 镜像加速</label>
+              <label class="switch"><input type="checkbox" id="default_playerDWRCATDBF"><span class="slider"></span></label>
+            </div>
+            <div class="default-item">
+              <label>拆东墙补西墙</label>
+              <label class="switch"><input type="checkbox" id="default_playerDWRCPilfer"><span class="slider"></span></label>
+            </div>
+            <div class="default-item">
+              <label>移除歌词元数据</label>
+              <label class="switch"><input type="checkbox" id="default_playerRMMetadata"><span class="slider"></span></label>
+            </div>
+            <div class="default-item">
+              <label>逐行歌词翻译</label>
+              <label class="switch"><input type="checkbox" id="default_playerTrLrc"><span class="slider"></span></label>
+            </div>
+          </div>
+
+          <h3 class="section-title">🔊 语音</h3>
+          <div class="defaults-grid">
+            <div class="default-item">
+              <label>网页语音交互</label>
+              <label class="switch"><input type="checkbox" id="default_webSpeech"><span class="slider"></span></label>
+            </div>
+            <div class="default-item">
+              <label>播报歌名</label>
+              <label class="switch"><input type="checkbox" id="default_playerSpeechName"><span class="slider"></span></label>
+            </div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="saveDefaults()">💾 保存前端默认设置</button>
+          <button class="btn btn-secondary" onclick="resetDefaultsToCode()">↺ 恢复代码默认值</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 图标选择器弹窗 -->
+  <div class="icon-picker-overlay" id="iconPickerOverlay">
+    <div class="icon-picker">
+      <div class="icon-picker-header">
+        <h3>🔍 图标选择器 · Iconify 网络图标库</h3>
+        <button class="icon-picker-close" onclick="closeIconPicker()" title="关闭">×</button>
+      </div>
+      <div class="icon-picker-search">
+        <input type="text" id="iconSearchInput" placeholder="搜索关键词（英文，如 github / home / music）" onkeydown="if(event.key==='Enter')searchIcons()" />
+        <select id="iconCollectionSelect">
+          <option value="">全部集合</option>
+          <option value="mdi">Material Design Icons</option>
+          <option value="fa6">Font Awesome 6</option>
+          <option value="fa">Font Awesome (老版)</option>
+          <option value="tabler">Tabler Icons</option>
+          <option value="iconoir">Iconoir</option>
+          <option value="ph">Phosphor Icons</option>
+          <option value="lucide">Lucide</option>
+          <option value="fluent">Fluent UI</option>
+          <option value="tdesign">TDesign</option>
+          <option value="ant-design">Ant Design Icons</option>
+          <option value="iconam">Iconam</option>
+          <option value="hugeicons">HugeIcons</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="searchIcons()">搜索</button>
+      </div>
+      <div class="icon-picker-current">
+        当前选择：<code id="iconPickerCurrent">未选择</code>
+      </div>
+      <div class="icon-picker-grid" id="iconPickerGrid">
+        <div class="icon-picker-empty">输入关键词后点击搜索，或直接在输入框填入图标名</div>
+      </div>
+      <div class="icon-picker-footer">
+        <span id="iconPickerInfo" class="icon-picker-info"></span>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-sm" onclick="prevIconPage()">◀ 上一页</button>
+          <button class="btn btn-secondary btn-sm" onclick="nextIconPage()">下一页 ▶</button>
+          <button class="btn btn-primary btn-sm" onclick="confirmIconPicker()">✓ 确认选择</button>
+        </div>
+      </div>
+      <div class="icon-picker-tip">
+        💡 <b>支持三种图标格式</b>：
+        ① <code>prefix:name</code>（Iconify 格式，如 <code>mdi:github</code>）；
+        ② 图片路径（如 <code>/images/icon/github.png</code>）；
+        ③ 网站链接预设名（<code>Blog/Cloud/CompactDisc/Compass/Book/Fire/LaptopCode</code>）。
+        更多图标请访问 <a href="https://icon-sets.iconify.design/" target="_blank">Iconify 图标库</a>。
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let runtimeConfig = {};
+    let defaultsConfig = {};
+    let siteLinks = [];
+    let socialLinks = [];
+    let bgConfig = { bgImageCount: 10, bgImageCountP: 2 };
+
+    function toast(msg, type = 'success') {
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2500);
+    }
+
+    async function api(url, method = 'GET', body = null) {
+      const opts = { method, headers: { 'Content-Type': 'application/json' } };
+      if (body) opts.body = JSON.stringify(body);
+      const resp = await fetch(url, opts);
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({ error: resp.statusText }));
+        throw new Error(err.error || '请求失败');
+      }
+      return resp.json();
+    }
+
+    /* ==================== 图标选择器 ==================== */
+    // 预设名到 Iconify 名的映射（用于预览图渲染）
+    const PRESET_TO_ICONIFY = {
+      Blog: 'fa:blog',
+      Cloud: 'fa:cloud',
+      CompactDisc: 'fa:compact-disc',
+      Compass: 'fa:compass',
+      Book: 'fa:book',
+      Fire: 'fa:fire',
+      LaptopCode: 'fa:laptop-code',
+    };
+
+    // 图标预览 URL 生成：支持预设名/Iconify 格式/图片路径
+    function getIconPreviewUrl(icon) {
+      if (!icon) return '';
+      // 预设名
+      if (PRESET_TO_ICONIFY[icon]) {
+        return `https://api.iconify.design/${PRESET_TO_ICONIFY[icon]}.svg?color=currentColor`;
+      }
+      // Iconify 格式 prefix:name
+      if (/^[a-z0-9-]+:[a-z0-9-]+$/.test(icon)) {
+        return `https://api.iconify.design/${icon}.svg?color=currentColor`;
+      }
+      // 图片路径
+      if (icon.startsWith('/') || icon.startsWith('http://') || icon.startsWith('https://')) {
+        return icon;
+      }
+      return '';
+    }
+
+    // 更新表格中图标预览图
+    function updateIconPreview(input) {
+      const wrap = input.closest('.form-item')?.querySelector('.icon-preview-wrap');
+      if (!wrap) return;
+      const img = wrap.querySelector('img');
+      const url = getIconPreviewUrl(input.value.trim());
+      if (url) {
+        img.src = url;
+        img.style.display = '';
+        wrap.querySelector('.icon-preview-label').textContent = '预览:';
+      } else {
+        img.style.display = 'none';
+        wrap.querySelector('.icon-preview-label').textContent = '无预览';
+      }
+    }
+
+    // IconPicker 状态
+    let iconPickerCallback = null;
+    let iconPickerSelected = '';
+    let iconPickerQuery = '';
+    let iconPickerPrefix = '';
+    let iconPickerPage = 0;
+    const ICON_LIMIT = 60;
+
+    // 打开图标选择器
+    // currentIcon: 当前 icon 值
+    // callback: 选择后调用的函数，参数为选中的 icon 名
+    function openIconPicker(currentIcon, callback) {
+      iconPickerCallback = callback;
+      iconPickerSelected = currentIcon || '';
+      iconPickerQuery = '';
+      iconPickerPrefix = '';
+      iconPickerPage = 0;
+      document.getElementById('iconSearchInput').value = '';
+      document.getElementById('iconCollectionSelect').value = '';
+      document.getElementById('iconPickerCurrent').textContent = iconPickerSelected || '未选择';
+      document.getElementById('iconPickerGrid').innerHTML = '<div class="icon-picker-empty">输入关键词后点击搜索</div>';
+      document.getElementById('iconPickerInfo').textContent = '';
+      document.getElementById('iconPickerOverlay').classList.add('active');
+      // 自动聚焦搜索框
+      setTimeout(() => document.getElementById('iconSearchInput').focus(), 100);
+    }
+
+    function closeIconPicker() {
+      document.getElementById('iconPickerOverlay').classList.remove('active');
+      iconPickerCallback = null;
+    }
+
+    async function searchIcons() {
+      const query = document.getElementById('iconSearchInput').value.trim();
+      const prefix = document.getElementById('iconCollectionSelect').value;
+      if (!query) {
+        toast('请输入搜索关键词', 'error');
+        return;
+      }
+      iconPickerQuery = query;
+      iconPickerPrefix = prefix;
+      iconPickerPage = 0;
+      await loadIcons();
+    }
+
+    async function loadIcons() {
+      const grid = document.getElementById('iconPickerGrid');
+      grid.innerHTML = '<div class="icon-picker-empty">🔍 搜索中...</div>';
+      const params = new URLSearchParams({
+        query: iconPickerQuery,
+        limit: String(ICON_LIMIT),
+        start: String(iconPickerPage * ICON_LIMIT),
+      });
+      if (iconPickerPrefix) params.set('prefix', iconPickerPrefix);
+      try {
+        const resp = await fetch(`https://api.iconify.design/search?${params.toString()}`);
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const data = await resp.json();
+        const icons = data.icons || [];
+        const total = data.total || 0;
+        if (icons.length === 0) {
+          grid.innerHTML = '<div class="icon-picker-empty">未找到匹配图标，换个关键词试试</div>';
+          document.getElementById('iconPickerInfo').textContent = '0 / 0';
+          return;
+        }
+        grid.innerHTML = '';
+        icons.forEach(name => {
+          const item = document.createElement('div');
+          item.className = 'icon-item';
+          if (name === iconPickerSelected) item.classList.add('selected');
+          item.title = name;
+          item.innerHTML = `
+            <img src="https://api.iconify.design/${name}.svg?color=currentColor" alt="${name}" onerror="this.style.opacity=0.2" />
+            <div class="icon-item-name">${name}</div>
+          `;
+          item.onclick = () => {
+            iconPickerSelected = name;
+            document.getElementById('iconPickerCurrent').textContent = name;
+            document.querySelectorAll('.icon-item').forEach(el => el.classList.remove('selected'));
+            item.classList.add('selected');
+          };
+          // 双击直接确认
+          item.ondblclick = () => {
+            iconPickerSelected = name;
+            confirmIconPicker();
+          };
+          grid.appendChild(item);
+        });
+        document.getElementById('iconPickerInfo').textContent =
+          `第 ${iconPickerPage + 1} 页 · ${iconPickerPage * ICON_LIMIT + 1}-${iconPickerPage * ICON_LIMIT + icons.length} / 共 ${total} 个`;
+      } catch (e) {
+        grid.innerHTML = `<div class="icon-picker-empty">搜索失败：${escapeHtml(e.message)}<br>可能是网络问题，Iconify API 在国内偶尔不稳定</div>`;
+      }
+    }
+
+    function prevIconPage() {
+      if (iconPickerPage > 0) {
+        iconPickerPage--;
+        loadIcons();
+      } else {
+        toast('已经是第一页', 'error');
+      }
+    }
+
+    function nextIconPage() {
+      iconPickerPage++;
+      loadIcons();
+    }
+
+    function confirmIconPicker() {
+      if (!iconPickerSelected) {
+        toast('请先选择一个图标（单击选中）', 'error');
+        return;
+      }
+      if (iconPickerCallback) iconPickerCallback(iconPickerSelected);
+      closeIconPicker();
+    }
+
+    // 点击遮罩关闭
+    document.getElementById('iconPickerOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'iconPickerOverlay') closeIconPicker();
+    });
+    // ESC 关闭
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('iconPickerOverlay').classList.contains('active')) {
+        closeIconPicker();
+      }
+    });
+
+    /* ==================== 以下为原有逻辑 ==================== */
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.querySelector(`.nav-item[data-tab="${tab}"]`).classList.add('active');
+    }
+
+    function navigateTab(tab) {
+      switchTab(tab);
+      // 仅在移动端侧边栏处于打开状态时才关闭它
+      // PC 端侧边栏常驻可见，不应触发遮罩
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar.classList.contains('open')) {
+        toggleSidebar();
+      }
+    }
+
+    async function reloadAll() {
+      try {
+        const data = await api('/api/all');
+        runtimeConfig = data.runtimeConfig || {};
+        defaultsConfig = data.defaults || {};
+        siteLinks = data.siteLinks || [];
+        socialLinks = data.socialLinks || [];
+        bgConfig = data.bgConfig || { bgImageCount: 10, bgImageCountP: 2 };
+        fillRuntimeForm();
+        fillDefaultsForm();
+        renderSiteLinks();
+        renderSocialLinks();
+        fillBgForm();
+        document.getElementById('statusBadge').textContent = '已加载';
+        toast('配置加载成功');
+      } catch (e) {
+        document.getElementById('statusBadge').textContent = '加载失败';
+        toast('加载失败: ' + e.message, 'error');
+      }
+    }
+
+    function fillRuntimeForm() {
+      const keys = [
+        'VITE_SITE_NAME','VITE_SITE_AUTHOR','VITE_SITE_MAIN_NAME','VITE_SITE_KEYWORDS',
+        'VITE_SITE_DES','VITE_SITE_URL','VITE_SITE_START','VITE_SITE_LOGO',
+        'VITE_SITE_MAIN_LOGO','VITE_SITE_APPLE_LOGO','VITE_SITE_ICP','VITE_SITE_MPS','VITE_SITE_MICP',
+        'VITE_DESC_HELLO','VITE_DESC_TEXT','VITE_DESC_HELLO_OTHER','VITE_DESC_TEXT_OTHER',
+        'VITE_SONG_API','VITE_SONG_SERVER','VITE_SONG_SERVER_SECOND','VITE_SONG_TYPE',
+        'VITE_SONG_ID','VITE_SONG_ID_SECOND','VITE_METING_SKEY',
+        'VITE_TX_WEATHER_KEY','VITE_GD_WEATHER_KEY','VITE_TX_WEATHER_SKEY',
+        'VITE_TTS_API','VITE_TTS_Voice','VITE_TTS_Style','VITE_TTS_SKEY','VITE_SFILE_SKEY',
+      ];
+      keys.forEach(k => {
+        const el = document.getElementById(k);
+        if (el) el.value = runtimeConfig[k] || '';
+      });
+    }
+
+    function collectRuntimeForm() {
+      const keys = [
+        'VITE_SITE_NAME','VITE_SITE_AUTHOR','VITE_SITE_MAIN_NAME','VITE_SITE_KEYWORDS',
+        'VITE_SITE_DES','VITE_SITE_URL','VITE_SITE_START','VITE_SITE_LOGO',
+        'VITE_SITE_MAIN_LOGO','VITE_SITE_APPLE_LOGO','VITE_SITE_ICP','VITE_SITE_MPS','VITE_SITE_MICP',
+        'VITE_DESC_HELLO','VITE_DESC_TEXT','VITE_DESC_HELLO_OTHER','VITE_DESC_TEXT_OTHER',
+        'VITE_SONG_API','VITE_SONG_SERVER','VITE_SONG_SERVER_SECOND','VITE_SONG_TYPE',
+        'VITE_SONG_ID','VITE_SONG_ID_SECOND','VITE_METING_SKEY',
+        'VITE_TX_WEATHER_KEY','VITE_GD_WEATHER_KEY','VITE_TX_WEATHER_SKEY',
+        'VITE_TTS_API','VITE_TTS_Voice','VITE_TTS_Style','VITE_TTS_SKEY','VITE_SFILE_SKEY',
+      ];
+      const out = { ...runtimeConfig };
+      out.VITE_CONFIG_TURN = runtimeConfig.VITE_CONFIG_TURN || 'true';
+      keys.forEach(k => {
+        const el = document.getElementById(k);
+        if (el) out[k] = el.value;
+      });
+      return out;
+    }
+
+    async function saveRuntimeConfig() {
+      try {
+        const data = collectRuntimeForm();
+        await api('/api/runtime-config', 'POST', data);
+        runtimeConfig = data;
+        toast('保存成功，刷新主站即可生效');
+      } catch (e) {
+        toast('保存失败: ' + e.message, 'error');
+      }
+    }
+
+    // ============ 前端默认设置 ============
+    // 代码默认值（与 storeState 中的默认值保持一致）
+    const CODE_DEFAULTS = {
+      coverType: 0, autoBGSwitchInterval: 2, seasonalEffects: true, theme: 'system',
+      siteStartShow: true, musicClick: true, musicVolume: 0.3,
+      playerLrcShow: true, footerBlur: true, footerProgressBar: true,
+      playerAutoplay: true, playerLoop: 'all', playerOrder: 'random',
+      webSpeech: true, playerSpeechName: true, playerTrLrc: false,
+      playerDWRCShow: true, playerDWRCShowPro: true,
+      playerDWRCATDB: true, playerDWRCATDBF: true,
+      playerDWRCPilfer: true, playerRMMetadata: false,
+    };
+
+    function fillDefaultsForm() {
+      const boolKeys = ['seasonalEffects','siteStartShow','musicClick','footerBlur','footerProgressBar','playerAutoplay','playerLrcShow','playerDWRCShow','playerDWRCShowPro','playerDWRCATDB','playerDWRCATDBF','playerDWRCPilfer','playerRMMetadata','playerTrLrc','webSpeech','playerSpeechName'];
+      boolKeys.forEach(k => {
+        const el = document.getElementById('default_' + k);
+        if (el) el.checked = defaultsConfig[k] !== undefined ? !!defaultsConfig[k] : !!CODE_DEFAULTS[k];
+      });
+      const selectKeys = ['coverType','autoBGSwitchInterval','theme','playerLoop','playerOrder'];
+      selectKeys.forEach(k => {
+        const el = document.getElementById('default_' + k);
+        if (el) el.value = String(defaultsConfig[k] !== undefined ? defaultsConfig[k] : CODE_DEFAULTS[k]);
+      });
+      const vol = document.getElementById('default_musicVolume');
+      if (vol) {
+        vol.value = defaultsConfig.musicVolume !== undefined ? defaultsConfig.musicVolume : CODE_DEFAULTS.musicVolume;
+        document.getElementById('default_musicVolume_val').textContent = Math.round(vol.value * 100) + '%';
+      }
+    }
+
+    function collectDefaultsForm() {
+      const out = {};
+      const boolKeys = ['seasonalEffects','siteStartShow','musicClick','footerBlur','footerProgressBar','playerAutoplay','playerLrcShow','playerDWRCShow','playerDWRCShowPro','playerDWRCATDB','playerDWRCATDBF','playerDWRCPilfer','playerRMMetadata','playerTrLrc','webSpeech','playerSpeechName'];
+      boolKeys.forEach(k => {
+        const el = document.getElementById('default_' + k);
+        if (el) out[k] = el.checked;
+      });
+      out.coverType = Number(document.getElementById('default_coverType').value);
+      out.autoBGSwitchInterval = Number(document.getElementById('default_autoBGSwitchInterval').value);
+      out.theme = document.getElementById('default_theme').value;
+      out.playerLoop = document.getElementById('default_playerLoop').value;
+      out.playerOrder = document.getElementById('default_playerOrder').value;
+      out.musicVolume = Number(document.getElementById('default_musicVolume').value);
+      return out;
+    }
+
+    async function saveDefaults() {
+      try {
+        const data = collectDefaultsForm();
+        await api('/api/defaults', 'POST', data);
+        defaultsConfig = data;
+        toast('保存成功，新访客首次访问时生效');
+      } catch (e) {
+        toast('保存失败: ' + e.message, 'error');
+      }
+    }
+
+    function resetDefaultsToCode() {
+      defaultsConfig = { ...CODE_DEFAULTS };
+      fillDefaultsForm();
+      toast('已恢复为代码默认值（需点击保存才生效）');
+    }
+
+    function renderSiteLinks() {
+      const container = document.getElementById('siteLinksBody');
+      container.innerHTML = '';
+      if (siteLinks.length === 0) {
+        container.innerHTML = '<div class="empty-tip">暂无链接，点击下方按钮添加</div>';
+        return;
+      }
+      siteLinks.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'list-item';
+        card.innerHTML = `
+          <div class="list-item-header">
+            <span class="list-item-index">${idx + 1}</span>
+            <button class="btn btn-danger btn-sm" onclick="removeSiteLink(${idx})">🗑 删除</button>
+          </div>
+          <div class="list-item-fields">
+            <div class="form-item icon-field-wrap">
+              <label>图标 (icon)</label>
+              <div class="icon-field">
+                <div class="form-item" style="flex:1">
+                  <input data-idx="${idx}" data-field="icon" value="${escapeHtml(item.icon||'')}" placeholder="Blog 或 mdi:github" />
+                  <div class="icon-preview-wrap">
+                    <span class="icon-preview-label">预览:</span>
+                    <img class="icon-preview" alt="预览" onerror="this.style.opacity=0.3" />
+                  </div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="openIconPickerForSiteLink(${idx})" title="从图标库选择">🔍</button>
+              </div>
+            </div>
+            <div class="form-item">
+              <label>名称</label>
+              <input data-idx="${idx}" data-field="name" value="${escapeHtml(item.name||'')}" />
+            </div>
+            <div class="form-item">
+              <label>链接</label>
+              <input data-idx="${idx}" data-field="link" value="${escapeHtml(item.link||'')}" />
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      // 绑定输入事件（含图标预览更新）
+      container.querySelectorAll('input').forEach(el => {
+        if (el.dataset.field === 'icon') updateIconPreview(el);
+        el.addEventListener('input', e => {
+          const i = +e.target.dataset.idx;
+          const f = e.target.dataset.field;
+          siteLinks[i][f] = e.target.value;
+          if (f === 'icon') updateIconPreview(e.target);
+        });
+      });
+    }
+
+    // 打开图标选择器（网站链接）
+    function openIconPickerForSiteLink(idx) {
+      const current = siteLinks[idx]?.icon || '';
+      openIconPicker(current, (selected) => {
+        siteLinks[idx].icon = selected;
+        const input = document.querySelector(`#siteLinksBody input[data-idx="${idx}"][data-field="icon"]`);
+        if (input) {
+          input.value = selected;
+          updateIconPreview(input);
+        }
+        toast('已选择图标：' + selected);
+      });
+    }
+
+    function addSiteLink() {
+      siteLinks.push({ icon: 'Blog', name: '新链接', link: 'https://' });
+      renderSiteLinks();
+    }
+
+    function removeSiteLink(idx) {
+      siteLinks.splice(idx, 1);
+      renderSiteLinks();
+    }
+
+    async function saveSiteLinks() {
+      try {
+        await api('/api/site-links', 'POST', siteLinks);
+        toast('网站链接保存成功');
+      } catch (e) {
+        toast('保存失败: ' + e.message, 'error');
+      }
+    }
+
+    function renderSocialLinks() {
+      const container = document.getElementById('socialLinksBody');
+      container.innerHTML = '';
+      if (socialLinks.length === 0) {
+        container.innerHTML = '<div class="empty-tip">暂无链接，点击下方按钮添加</div>';
+        return;
+      }
+      socialLinks.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'list-item';
+        card.innerHTML = `
+          <div class="list-item-header">
+            <span class="list-item-index">${idx + 1}</span>
+            <button class="btn btn-danger btn-sm" onclick="removeSocialLink(${idx})">🗑 删除</button>
+          </div>
+          <div class="list-item-fields">
+            <div class="form-item">
+              <label>名称</label>
+              <input data-idx="${idx}" data-field="name" value="${escapeHtml(item.name||'')}" />
+            </div>
+            <div class="form-item icon-field-wrap">
+              <label>图标</label>
+              <div class="icon-field">
+                <div class="form-item" style="flex:1">
+                  <input data-idx="${idx}" data-field="icon" value="${escapeHtml(item.icon||'')}" placeholder="/images/x.png 或 mdi:github" />
+                  <div class="icon-preview-wrap">
+                    <span class="icon-preview-label">预览:</span>
+                    <img class="icon-preview" alt="预览" onerror="this.style.opacity=0.3" />
+                  </div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="openIconPickerForSocialLink(${idx})" title="从图标库选择">🔍</button>
+              </div>
+            </div>
+            <div class="form-item">
+              <label>提示文本</label>
+              <input data-idx="${idx}" data-field="tip" value="${escapeHtml(item.tip||'')}" />
+            </div>
+            <div class="form-item">
+              <label>链接</label>
+              <input data-idx="${idx}" data-field="url" value="${escapeHtml(item.url||'')}" />
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      container.querySelectorAll('input').forEach(el => {
+        if (el.dataset.field === 'icon') updateIconPreview(el);
+        el.addEventListener('input', e => {
+          const i = +e.target.dataset.idx;
+          const f = e.target.dataset.field;
+          socialLinks[i][f] = e.target.value;
+          if (f === 'icon') updateIconPreview(e.target);
+        });
+      });
+    }
+
+    // 打开图标选择器（社交链接）
+    function openIconPickerForSocialLink(idx) {
+      const current = socialLinks[idx]?.icon || '';
+      openIconPicker(current, (selected) => {
+        socialLinks[idx].icon = selected;
+        const input = document.querySelector(`#socialLinksBody input[data-idx="${idx}"][data-field="icon"]`);
+        if (input) {
+          input.value = selected;
+          updateIconPreview(input);
+        }
+        toast('已选择图标：' + selected);
+      });
+    }
+
+    function addSocialLink() {
+      socialLinks.push({ name: '新社交', icon: '/images/icon/github.png', tip: '去看看', url: 'https://' });
+      renderSocialLinks();
+    }
+
+    function removeSocialLink(idx) {
+      socialLinks.splice(idx, 1);
+      renderSocialLinks();
+    }
+
+    async function saveSocialLinks() {
+      try {
+        await api('/api/social-links', 'POST', socialLinks);
+        toast('社交链接保存成功');
+      } catch (e) {
+        toast('保存失败: ' + e.message, 'error');
+      }
+    }
+
+    function fillBgForm() {
+      document.getElementById('bgImageCount').value = bgConfig.bgImageCount || 10;
+      document.getElementById('bgImageCountP').value = bgConfig.bgImageCountP || 2;
+    }
+
+    async function saveBgConfig() {
+      try {
+        const data = {
+          bgImageCount: parseInt(document.getElementById('bgImageCount').value, 10) || 1,
+          bgImageCountP: parseInt(document.getElementById('bgImageCountP').value, 10) || 1,
+        };
+        await api('/api/bg-config', 'POST', data);
+        bgConfig = data;
+        toast('背景配置保存成功');
+      } catch (e) {
+        toast('保存失败: ' + e.message, 'error');
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    reloadAll();
+  </script>
+</body>
+</html>

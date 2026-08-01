@@ -1,75 +1,105 @@
 import exampleConfig from '@/assets/example_config.json';
 type Env = ImportMetaEnv;
 
-export const envConfig: Env = {
-    ...import.meta.env,
-    BASE_URL: import.meta.env.BASE_URL,
-    MODE: import.meta.env.MODE,
-    DEV: import.meta.env.DEV,
-    PROD: import.meta.env.PROD,
-    SSR: import.meta.env.SSR,
-    VITE_SITE_NAME: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_NAME || exampleConfig.VITE_SITE_NAME : exampleConfig.VITE_SITE_NAME,
-    VITE_SITE_AUTHOR: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_AUTHOR || exampleConfig.VITE_SITE_AUTHOR : exampleConfig.VITE_SITE_AUTHOR,
-    VITE_SITE_KEYWORDS: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_KEYWORDS || exampleConfig.VITE_SITE_KEYWORDS : exampleConfig.VITE_SITE_KEYWORDS,
-    VITE_SITE_DES: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_DES || exampleConfig.VITE_SITE_DES : exampleConfig.VITE_SITE_DES,
-    VITE_SITE_URL: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_URL || exampleConfig.VITE_SITE_URL : exampleConfig.VITE_SITE_URL,
-    VITE_SITE_MAIN_NAME: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_MAIN_NAME || exampleConfig.VITE_SITE_MAIN_NAME : exampleConfig.VITE_SITE_MAIN_NAME,
-    VITE_SITE_LOGO: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_LOGO || exampleConfig.VITE_SITE_LOGO : exampleConfig.VITE_SITE_LOGO,
-    VITE_SITE_MAIN_LOGO: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_MAIN_LOGO || exampleConfig.VITE_SITE_MAIN_LOGO : exampleConfig.VITE_SITE_MAIN_LOGO,
-    VITE_SITE_APPLE_LOGO: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_APPLE_LOGO || exampleConfig.VITE_SITE_APPLE_LOGO : exampleConfig.VITE_SITE_APPLE_LOGO,
-    VITE_DESC_HELLO: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_DESC_HELLO || exampleConfig.VITE_DESC_HELLO : exampleConfig.VITE_DESC_HELLO,
-    VITE_DESC_TEXT: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_DESC_TEXT || exampleConfig.VITE_DESC_TEXT : exampleConfig.VITE_DESC_TEXT,
-    VITE_DESC_HELLO_OTHER: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_DESC_HELLO_OTHER || exampleConfig.VITE_DESC_HELLO_OTHER : exampleConfig.VITE_DESC_HELLO_OTHER,
-    VITE_DESC_TEXT_OTHER: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_DESC_TEXT_OTHER || exampleConfig.VITE_DESC_TEXT_OTHER : exampleConfig.VITE_DESC_TEXT_OTHER,
-    VITE_TX_WEATHER_KEY: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_TX_WEATHER_KEY || exampleConfig.VITE_TX_WEATHER_KEY : exampleConfig.VITE_TX_WEATHER_KEY,
-    VITE_GD_WEATHER_KEY: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_GD_WEATHER_KEY || exampleConfig.VITE_GD_WEATHER_KEY : exampleConfig.VITE_GD_WEATHER_KEY,
-    VITE_SITE_START: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_START || exampleConfig.VITE_SITE_START : exampleConfig.VITE_SITE_START,
-    VITE_SITE_ICP: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_ICP || exampleConfig.VITE_SITE_ICP : exampleConfig.VITE_SITE_ICP,
-    VITE_SITE_MPS: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_MPS || exampleConfig.VITE_SITE_MPS : exampleConfig.VITE_SITE_MPS,
-    VITE_SITE_MICP: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SITE_MICP || exampleConfig.VITE_SITE_MICP : exampleConfig.VITE_SITE_MICP,
-    VITE_SONG_API: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SONG_API || exampleConfig.VITE_SONG_API : exampleConfig.VITE_SONG_API,
-    VITE_SONG_SERVER: (import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? (import.meta.env.VITE_SONG_SERVER || exampleConfig.VITE_SONG_SERVER) : exampleConfig.VITE_SONG_SERVER) as "netease" | "tencent",
-    VITE_SONG_SERVER_SECOND: (import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? (import.meta.env.VITE_SONG_SERVER_SECOND || exampleConfig.VITE_SONG_SERVER_SECOND) : exampleConfig.VITE_SONG_SERVER_SECOND) as "netease" | "tencent",
-    VITE_SONG_TYPE: (import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? (import.meta.env.VITE_SONG_TYPE || exampleConfig.VITE_SONG_TYPE) : exampleConfig.VITE_SONG_TYPE) as "playlist" | "song",
-    VITE_SONG_ID: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SONG_ID || exampleConfig.VITE_SONG_ID : exampleConfig.VITE_SONG_ID,
-    VITE_SONG_ID_SECOND: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SONG_ID_SECOND || exampleConfig.VITE_SONG_ID_SECOND : exampleConfig.VITE_SONG_ID_SECOND,
-    VITE_TTS_API: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_TTS_API || exampleConfig.VITE_TTS_API : exampleConfig.VITE_TTS_API,
-    VITE_TTS_Voice: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_TTS_Voice || exampleConfig.VITE_TTS_Voice : exampleConfig.VITE_TTS_Voice,
-    VITE_TTS_Style: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_TTS_Style || exampleConfig.VITE_TTS_Style : exampleConfig.VITE_TTS_Style,
-    VITE_TTS_SKEY: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_TTS_SKEY || exampleConfig.VITE_TTS_SKEY : exampleConfig.VITE_TTS_SKEY,
-    VITE_TX_WEATHER_SKEY: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_TX_WEATHER_SKEY || exampleConfig.VITE_TX_WEATHER_SKEY : exampleConfig.VITE_TX_WEATHER_SKEY,
-    VITE_METING_SKEY: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_METING_SKEY || exampleConfig.VITE_METING_SKEY : exampleConfig.VITE_METING_SKEY,
-    VITE_SFILE_SKEY: import.meta.env.VITE_CONFIG_TURN == 'true'
-        ? import.meta.env.VITE_SFILE_SKEY || exampleConfig.VITE_SFILE_SKEY : exampleConfig.VITE_SFILE_SKEY,
+// 运行时配置缓存（由 loadRuntimeConfig 写入）
+let runtimeConfig: Record<string, any> | null = null;
+
+/**
+ * 从 /runtime-config.json 加载运行时配置
+ * 加载失败时回退到编译时 .env 配置，保证兼容性
+ * 必须在应用 mount 前调用
+ */
+export async function loadRuntimeConfig(): Promise<void> {
+    try {
+        const resp = await fetch('/runtime-config.json', { cache: 'no-cache' });
+        if (resp.ok) {
+            runtimeConfig = await resp.json() as Record<string, string>;
+            console.log('[config] 运行时配置加载成功');
+        } else {
+            console.warn('[config] 运行时配置加载失败：HTTP', resp.status, '，回退到编译时配置');
+        }
+    } catch (e) {
+        console.warn('[config] 运行时配置加载异常，回退到编译时配置：', e);
+    }
+}
+
+// 取值工具：优先运行时配置 > 编译时 .env > example_config.json
+const pick = (key: string): string => {
+    if (runtimeConfig && runtimeConfig[key] !== undefined && runtimeConfig[key] !== '') {
+        return runtimeConfig[key] as string;
+    }
+    const envTurnedOn = import.meta.env.VITE_CONFIG_TURN == 'true';
+    if (envTurnedOn) {
+        const v = (import.meta.env as Record<string, string>)[key];
+        if (v !== undefined && v !== '') return v;
+    }
+    return (exampleConfig as Record<string, string>)[key] ?? '';
+};
+
+// VITE_ 配置键列表
+const viteKeys = [
+    'VITE_CONFIG_TURN',
+    'VITE_SITE_NAME',
+    'VITE_SITE_AUTHOR',
+    'VITE_SITE_KEYWORDS',
+    'VITE_SITE_DES',
+    'VITE_SITE_URL',
+    'VITE_SITE_MAIN_NAME',
+    'VITE_SITE_LOGO',
+    'VITE_SITE_MAIN_LOGO',
+    'VITE_SITE_APPLE_LOGO',
+    'VITE_DESC_HELLO',
+    'VITE_DESC_TEXT',
+    'VITE_DESC_HELLO_OTHER',
+    'VITE_DESC_TEXT_OTHER',
+    'VITE_TX_WEATHER_KEY',
+    'VITE_GD_WEATHER_KEY',
+    'VITE_SITE_START',
+    'VITE_SITE_ICP',
+    'VITE_SITE_MPS',
+    'VITE_SITE_MICP',
+    'VITE_SONG_API',
+    'VITE_SONG_SERVER',
+    'VITE_SONG_SERVER_SECOND',
+    'VITE_SONG_TYPE',
+    'VITE_SONG_ID',
+    'VITE_SONG_ID_SECOND',
+    'VITE_TTS_API',
+    'VITE_TTS_Voice',
+    'VITE_TTS_Style',
+    'VITE_TTS_SKEY',
+    'VITE_TX_WEATHER_SKEY',
+    'VITE_METING_SKEY',
+    'VITE_SFILE_SKEY',
+];
+
+// 使用 Proxy 让 envConfig 动态响应运行时配置的加载
+// 这样在 loadRuntimeConfig() 完成后，所有访问都会得到最新的值
+export const envConfig: Env = new Proxy({} as Env, {
+    get(_target, prop: string) {
+        // vite 内置变量直接返回
+        if (prop === 'BASE_URL') return import.meta.env.BASE_URL;
+        if (prop === 'MODE') return import.meta.env.MODE;
+        if (prop === 'DEV') return import.meta.env.DEV;
+        if (prop === 'PROD') return import.meta.env.PROD;
+        if (prop === 'SSR') return import.meta.env.SSR;
+        // VITE_ 配置项动态读取
+        if (viteKeys.includes(prop)) {
+            return pick(prop);
+        }
+        // 其他 import.meta.env 属性
+        return (import.meta.env as Record<string, unknown>)[prop];
+    },
+});
+
+/**
+ * 读取后台配置的前端设置默认值（对象类型，存储在 runtime-config.json 的 defaults 字段）
+ * 必须在 loadRuntimeConfig() 完成后调用
+ * 返回空对象时表示未配置，使用代码默认值
+ */
+export function getDefaults(): Record<string, any> {
+    if (runtimeConfig && runtimeConfig.defaults && typeof runtimeConfig.defaults === 'object') {
+        return runtimeConfig.defaults as Record<string, any>;
+    }
+    return {};
 }

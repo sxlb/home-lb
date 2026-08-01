@@ -286,10 +286,10 @@ const seekbackward = (value) => {
   const dur = player.value.audioStatus.duration;
   const currentTime = player.value.audioStatus.playedTime;
   const ti = currentTime - value;
-  if (ti > dur) {
-    changeSong(1);
-  } else if (ti < dur) {
+  if (ti < 0) {
     player.value.aplayer.seek(0);
+  } else if (ti > dur) {
+    changeSong(1);
   } else {
     player.value.aplayer.seek(ti);
   };
@@ -303,7 +303,7 @@ const seekforward = (value) => {
   const ti = currentTime + value;
   if (ti > dur) {
     changeSong(1);
-  } else if (ti < dur) {
+  } else if (ti < 0) {
     player.value!.aplayer.seek(0);
   } else {
     player.value!.aplayer.seek(ti);

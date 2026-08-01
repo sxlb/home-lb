@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import i18n from "@/i18n";
 import config from "@/../package.json";
 import "@/style/style.scss";
 import App from "@/App.vue";
@@ -23,6 +24,7 @@ export default pinia;
 pinia.use(piniaPluginPersistedstate);
 pinia.use(validationPlugin);
 app.use(pinia);
+app.use(i18n);
 
 const mountApp = () => {
   const appEl = document.getElementById("app");

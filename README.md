@@ -14,25 +14,15 @@
 > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·&nbsp;详细文档请查阅 [项目文档](https://github.com/sxlb/home-lb/blob/master/docs/README.md)（共 15 篇，涵盖架构、配置、组件、API、部署等）。<p>
 >
 > #### 本次主要更改内容
-> - **管理后台（新增）**：原版没有后台功能，本次新增 Express 管理后台（`/admin`），支持在线管理站点信息、网站链接、社交链接、背景配置、前端默认设置（22 项可配置项）等，无需重新构建即可修改配置；UI 由表格改为卡片列表，适配移动端
-> - **部署合并**：将原双容器（Nginx + admin-server）部署合并为**单容器**架构，由 admin-server 统一提供主站、管理后台、API 服务，简化部署流程
-> - **Bug 修复**：
->   - 修复 Dockerfile 非 root 用户无 `public/` 写权限导致后台保存失败
->   - 修复健康检查依赖 `wget`（slim 镜像不含）导致容器始终 unhealthy
->   - 修复 Player 快退/快进逻辑反转、PWA 更新语音文件路径错误
->   - 补全 admin UI 缺失的 `autoBGSwitchInterval` 配置项
-> - **新增文档**：`docs/` 目录共 15 篇文档（架构→配置→组件→API→歌词→天气→语音→季节效果→部署→管理后台）
-> - **新增部署脚本**：Linux `deploy.sh`、Windows `deploy.ps1`、Docker 单容器 `docker-compose.yml`
-> - **清理冗余**：移除 `public/speechlocal/Yunxia/` 副本（40 个未使用 mp3）、自动生成文件等
-> - **维护**：`.gitignore` 补充运行时配置与 Vite 生成文件忽略规则
+> - **管理后台（新增）**：原版没有后台功能，本次新增 Express 管理后台（`/admin`），支持在线管理站点信息、网站链接、社交链接、背景配置、前端默认设置（22 项可配置项）等，无需重新构建即可修改配置；
+> - **i18n 国际化（新增）**：主站与管理后台均支持中英文双语切换，语音播报根据语言自动切换 voice，时间文本与 dayjs locale 同步国际化；
+> - **Bug 修复**：修复 Player 快进/快退逻辑反转、PWA 更新语音文件路径、Docker 容器写权限、健康检查命令、后台移动端灰色遮罩等问题；
+> - **新增文档**：`docs/` 目录共 15 篇文档（架构→配置→组件→API→歌词→天气→语音→季节效果→部署→管理后台）；
+> - **新增部署脚本**：Linux `deploy.sh`、Windows `deploy.ps1`、Docker 单容器 `docker-compose.yml`；
+> - **部署合并**：原双容器（Nginx + admin-server）合并为单容器，由 admin-server 统一提供主站、管理后台、API 服务。
 
 <p>&nbsp;<p>
 
-> [!WARNING]
-> ## hmm...
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;下一个版本原计划是添加 i18n ，由于工作量巨大且...某个笨蛋最近迷上了 洛克王国 ，故这个更新可能会遥遥无期(x)... 等腾点时间出来叭（<p>
-
-<p>&nbsp;<p>
 <strong><h2>無名の主页</h2></strong>
 </p>
 
@@ -40,52 +30,92 @@
 ![無名の主页](/screenshots/main1.png)<p>
 ![無名の主页](/screenshots/main2.png)<p>
 
-### 👀 Demo
+## 项目介绍
 
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·&nbsp;由于 workbox 缓存原因，查看最新效果可能需要 `Ctrl` + `F5` 强制刷新浏览器缓存噢！
+無名の主页是一个基于 Vue 3 + TypeScript 的个人主页项目，具有载入动画、站点简介、一言、日期时间、实时天气、时光进度条、音乐播放器、逐字歌词、移动端适配等功能。
 
-- [酪灰の主页](https://nanorocky.top/)
+本项目在原作者 [imsyy](https://github.com/imsyy/) 的基础上，由酪灰（[NanoRocky](https://github.com/NanoRocky/)）与 Pizero 进行了二次开发，新增了管理后台、i18n 国际化、逐字歌词兼容、季节特效等功能。
 
-> 【小贴士】如果您的项目不需要 workbox 的本地缓存，比如有 CDN 的情况下，或者是遇到访问子路径自动跳转主页的情况，可以取消注释 `vite.config.ts` 内的两行代码：
-
-```bash
-selfDestroying: true,
-injectRegister: false,
-```
-
-### 🎉 功能
+### 核心功能
 
 - [x] 载入动画
 - [x] 站点简介
 - [x] Hitokoto 一言
 - [x] 日期及时间
-- [x] 实时天气
+- [x] 实时天气（多源聚合，腾讯/高德/小米）
 - [x] 时光进度条
-- [x] 音乐播放器
+- [x] 音乐播放器（APlayer + 逐字歌词）
 - [x] 移动端适配
-- [x] 逐字歌词兼容
+- [x] 逐字歌词兼容（DWRC/YRC/QRC）
+- [x] 季节特效（雪花/萤火虫/灯笼）
+- [x] 管理后台（在线配置，无需重新构建）
+- [x] i18n 国际化（中英文双语）
+- [x] PWA 离线缓存与自动更新
 
-### ⚙️ 自动部署
+### 技术栈
 
-如果遇到构建环境或者打包过程出现错误，则可以采用 `Github Actions` 来进行自动构建
+- [Vue 3](https://cn.vuejs.org/) + [TypeScript](https://www.typescriptlang.org/zh/)
+- [Vite](https://vitejs.cn/vite3-cn/) + [Pinia](https://pinia.vuejs.org/zh/)
+- [Element Plus](https://element-plus.org/zh-CN/)
+- [APlayer](https://aplayer.js.org/) 音乐播放器
+- [UnoCSS](https://unocss.dev/) 原子化 CSS
+- [vue-i18n](https://vue-i18n.intlify.dev/) 国际化
+- [IconPark](https://iconpark.oceanengine.com/official) + [xicons](https://xicons.org/)
+- [Express](https://expressjs.com/) 管理后台
 
-- 在成功 `fork` 仓库后，前往 `Actions` 页面，若您是首次开启，则会出现下面的提示，点击开启
+### Demo
 
-  ![步骤1](/screenshots/step1.jpg)
+> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·&nbsp;由于 workbox 缓存原因，查看最新效果可能需要 `Ctrl` + `F5` 强制刷新浏览器缓存噢！
 
-- 然后在仓库中进行任意修改后均会触发工作流的运行，在工作流完成后，会在下方生成一个可供下载的压缩包，这就是构建出的静态文件，可自行上传至服务器
+- [酪灰の主页](https://nanorocky.top/)
 
-  ![步骤2](/screenshots/step2.jpg)
+<p>&nbsp;<p>
 
-### ⚙️ 手动部署
+## 部署
 
-- **安装** [node.js](https://nodejs.org/zh-cn/) **环境**
+项目支持多种部署方式，按需选择。
 
-  > node > 24.13.0 <p>
-  > npm > 10.15.0
+### 方式一：Docker 部署（推荐）
 
-- 然后以 **管理员权限** 运行 `PowerShell` 终端，并 `cd` 到 项目根目录
-- 在 `终端` 中输入：
+采用**单容器**架构，由 `admin-server` 统一提供主站、管理后台、API 服务。
+
+```bash
+# 1. 复制环境变量示例
+cp scripts/.env.deploy.example .env.deploy
+
+# 2. 修改 ADMIN_TOKEN（强烈建议设置强密码）
+vim .env.deploy
+
+# 3. 一行命令完成构建 + 启动（Docker 内部会执行 pnpm build）
+docker compose --env-file .env.deploy up -d --build
+```
+
+启动后访问：
+
+- 主站：`http://localhost:12446/`
+- 管理后台：`http://localhost:12446/admin`（修改配置后主站刷新即生效，无需重新构建）
+
+### 方式二：一键部署脚本
+
+项目提供 Linux 和 Windows 的一键部署脚本，详见 [scripts/README.md](./scripts/README.md)。
+
+**Linux：**
+
+```bash
+sudo ADMIN_TOKEN=your-strong-secret ./scripts/deploy.sh deploy
+```
+
+**Windows（以管理员权限运行 PowerShell）：**
+
+```powershell
+.\scripts\deploy.ps1 deploy
+```
+
+脚本支持 `deploy`、`update`、`restart`、`backup`、`rollback` 等子命令。
+
+### 方式三：手动部署
+
+- **安装** [Node.js](https://nodejs.org/zh-cn/) **环境**（node > 24.13.0，npm > 10.15.0）
 
 ```bash
 # 安装 pnpm
@@ -101,195 +131,106 @@ pnpm dev
 pnpm build
 ```
 
-> 构建完成后，静态资源会在 **`dist` 目录** 中生成，可将 **`dist` 文件夹下的文件**上传至服务器，也可使用 `Vercel` 等托管平台一键导入并自动部署
+构建完成后，静态资源会在 `dist` 目录中生成，可将 `dist` 文件夹下的文件上传至服务器。
 
-### ⚙️ Docker 部署
+### 方式四：Vercel 部署
 
-> 安装及配置 Docker 将不在此处说明，请自行解决
-
-采用**单容器**架构，由 `admin-server` 统一提供主站、管理后台、API 服务：
-
-```bash
-# 复制环境变量示例
-cp scripts/.env.deploy.example .env.deploy
-
-# 修改 ADMIN_TOKEN（强烈建议）
-vim .env.deploy
-
-# 一行命令完成构建 + 启动（Docker 内部会执行 pnpm build）
-docker compose --env-file .env.deploy up -d --build
-```
-
-启动后访问：
-
-- 主站：`http://localhost:12446/`
-- 管理后台：`http://localhost:12446/admin`（修改配置后主站刷新即生效，无需重新构建）
-
-### ⚙️ 一键部署脚本
-
-项目提供三种环境的部署脚本，详见 [scripts/README.md](./scripts/README.md)：
-
-- **Linux**：`sudo ADMIN_TOKEN=xxx ./scripts/deploy.sh deploy`
-- **Windows**：`.\scripts\deploy.ps1 deploy`
-- **Docker**：`docker compose --env-file .env.deploy up -d --build`
-
-### ⚙️ Vercel 部署
-
-> 其他部署平台大致相同，在此不做说明
-
-1. 点击本仓库右上角的 `Fork`，复制本仓库到你的 `GitHub` 账号
-2. 复制 `/.env.example` 文件并重命名为 `/.env`（ 重要 ）
+1. 点击本仓库右上角的 `Fork`，复制本仓库到你的 GitHub 账号
+2. 复制 `/.env.example` 文件并重命名为 `/.env`（重要）
 3. 按需修改 `/.env` 文件中的配置
 4. 点击 `Deploy`，即可成功部署
 
+### 方式五：GitHub Actions 自动构建
+
+在成功 `fork` 仓库后，前往 `Actions` 页面开启工作流，修改仓库后即会触发构建，完成后可下载构建产物。
+
+![步骤1](/screenshots/step1.jpg)
+![步骤2](/screenshots/step2.jpg)
+
+<p>&nbsp;<p>
+
+## 配置
+
+### 环境变量
+
+复制 `.env.example` 为 `.env`，按需填写：
+
+```bash
+# 启用配置文件
+VITE_CONFIG_ENABLE=true
+
+# 站点信息
+VITE_SITE_TITLE="無名の主页"
+VITE_SITE_DESC="一个个人主页"
+
+# 天气 API（腾讯位置服务 / 高德开放平台）
+VITE_TENCENT_KEY=your-tencent-key
+VITE_AMAP_KEY=your-amap-key
+
+# 音乐 API（建议自行搭建 Meting-Api）
+VITE_SONG_API="https://metingapi.nanorocky.top/"
+VITE_SONG_SERVER="netease"
+VITE_SONG_TYPE="playlist"
+VITE_SONG_ID="3035221869"
+
+# TTS 语音 API
+VITE_TTS_API=your-tts-api
+```
+
 ### 网站链接
 
-在 `src/assets/siteLinks.json` 中可以自定义网站链接（以指向自己的网站）:
+在 `src/assets/siteLinks.json` 中自定义网站链接：
 
 ```json
 {
   "icon": "Blog",
   "name": "博客",
   "link": "https://blog.your.domain/"
-},
+}
 ```
 
-其中 `icon` 网站链接的图标可以在 `src/components/Links/index.vue` 中添加:
-
-```js
-// 可前往 https://www.xicons.org 自行挑选并在此处引入
-// 此处引入的是 fa 类型
-import {
-  Link,
-  Blog,
-  CompactDisc,
-  Cloud,
-  Compass,
-  Book,
-  Fire,
-  LaptopCode,
-} from "@vicons/fa";
-
-...
-
-// 网站链接图标
-const siteIcon = {
-  Blog,
-  Cloud,
-  CompactDisc,
-  Compass,
-  Book,
-  Fire,
-  LaptopCode,
-};
-```
+图标在 `src/components/Links/index.vue` 中引入（可前往 [xicons](https://www.xicons.org) 自行挑选）。
 
 ### 社交链接
 
-在 `src/assets/socialLinks.json` 中可以自定义社交链接。
+在 `src/assets/socialLinks.json` 中自定义社交链接。
 
-### 天气
+### 网站背景
 
-天气及地区获取需要 `腾讯位置服务` 与 `高德开放平台` 相关 API
+在 `public/images` 中修改网站背景。添加更多本地壁纸时，将图片重命名为 `background+数字` 形式，并编辑 `public/images/config.json`：
 
-- 前往 [腾讯位置服务](https://lbs.qq.com/) 或 [高德开放平台控制台](https://console.amap.com/dev/index) 创建一个 `Web 服务` 类型的 `Key`，并将 `Key` 填入 `.env` 中对应参数中。
-- 注：高德开放平台的 FREE IP定位接口不支持 IPV6，如果遇到高德接口异常，请检查网络环境是否有 IPV6，系统是否使用 IPV6 优先。你也可以在浏览器开发者选项中看到“远程地址”是否为 IPV6 地址。腾讯接口同时支持 IPV4 和 IPV6。
-
-也可自行更换其他方式。
-
->[!WARNING]
->强烈建议自行注册天气 Token ，它们是免费且稳定的！<p>
->内置了三个免费接口，目前仅剩 小米天气 可正常工作。由于这些非公开接口没有 CORS 不允许跨域，必须使用中转。并且拥有较高的速率限制，所以经常失效。如果您希望使用这个接口，记得捐赠酪灰，帮助其承担服务器费用！<p>
-
-### 音乐
-
-> 本项目采用了 `Aplayer` 音乐播放器，可实现快速自定义歌单
-> \*仅支持 **中国大陆地区**
-
-请在 `.env` 文件中更改歌曲相关参数即可实现自定义歌单列表
-
-```bash
-# 歌曲 API 地址 （强烈建议自行搭建 Meting-Api）
-VITE_SONG_API = "https://metingapi.nanorocky.top/"
-# 歌曲服务器 ( netease-网易云, tencent-qq音乐 )
-VITE_SONG_SERVER = "netease"
-VITE_SONG_SERVER_SECOND = "tencent"
-# 播放类型 ( song-歌曲, playlist-播放列表, album-专辑, search-搜索, artist-艺术家 )
-VITE_SONG_TYPE = "playlist"
-# 播放 ID
-VITE_SONG_ID = "3035221869"
-VITE_SONG_ID_SECOND = "9518088898"
-```
->目前已支持设置两个歌单进行合并，如不需要，留空即可。<p>
->如果需要使用网易云音乐逐字歌词，请使用 [修改版 Meting-Api](https://github.com/NanoRocky/meting-api/) ！<p>
-
->[!WARNING]
->这里提供的 api 有较高的速率限制，且不太稳定，强烈建议自行搭建 Meting-API！你也可以赞助酪灰帮助他承担服务费用！阿里嘎多！<p>
->注意：提供的 api 可能出现Q音接口抛 401 的情况，并非服务异常，Q音接口需要将项目编译后挂到正常域名并使用 https only，使用正常 443 端口，才能正常工作。<p>
-
-### 字体
-
-现采用 `MiSans` and `HarmonyOS Sans` 字体，采用字体拆分，提升加载速度。
-
-> `https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap` <p>
-> `https://s1.hdslb.com/bfs/static/jinkela/long/font/regular.css`
-
-
-### 网站图标及网站背景
-
-#### 网站背景
-
-可以在 `public/images` 中修改网站背景。<p>
-
-如果想要添加更多的本地图片作为网站背景，可以将图片重命名 `background+数字` 的形式，并进行修改：<p>
-
->· 先编辑 `src/components/Background/index.vue`
-```js
-// 设置一个默认值，防止在无法加载 JSON 文件时壁纸失效。应该尽量保证壁纸数始终不小于这个默认值
-let bgImageCount = 10; // PC 版壁纸
-let bgImageCountP = 2; // 移动版壁纸
-```
-
->· 再编辑 `public/images/config.json`
-```js
+```json
 {
-  "bgImageCount": 10, // PC 版壁纸
-  "bgImageCountP": 2 // 移动版壁纸
+  "bgImageCount": 10,
+  "bgImageCountP": 2
 }
 ```
-后续添加或减少壁纸，可直接编辑 `config.json` ，而无需重新编译项目。但必须确保壁纸数始终大于或等于 `index.vue` 中的配置。
 
-如需配置默认壁纸选项，请编辑 `src/store/index.js`
+### 网站图标
 
-```js
-coverType: "0", // 壁纸种类
-```
+在 `public/images/icon` 中修改网站图标。
 
-#### 网站图标
+### 语音交互
 
-可以在 `public/images/icon` 中修改网站图标。
+- **预生成语音**：提前生成并放在 `public/speechlocal/` 路径下，替换原有音频，用于固定通知（低延迟）
+- **实时生成语音**：用于音乐播放器歌名播报，需自行搭建并填写在 `.env` 内
 
-#### 语音交互
+如使用 Azure，可直接使用 [AzureSpeechAPI-by-PHP](https://github.com/NanoRocky/AzureSpeechAPI-by-PHP) 完成 API 部署。
 
->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·&nbsp;语音交互区分 预生成 与 实时生成。<p>
->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·&nbsp;预生成的语音需要提前生成并放在 `public/speechlocal/` 路径下，替换原有音频。预生成的音频是为固定不变的通知设计的，有更低的语音延迟（推荐使用 CDN 或对音频文件启用客户端缓存）。<p>
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·&nbsp;实时生成的语音用于音乐播放器歌名播报，需自行搭建并填写在 `.env` 内。如果也使用 Azure ，您可直接使用[AzureSpeechAPI-by-PHP](https://github.com/NanoRocky/AzureSpeechAPI-by-PHP) 完成 API 部署。
+### 管理后台
 
-#### 更多默认设置
+部署后访问 `/admin` 路径即可使用管理后台，支持在线管理：
 
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·&nbsp;自动播放，逐字开关，语音交互开关 等其它默认设置，请编辑 `src/store/index.js` ，但这些设置仅对编辑后首次打开网页的用户生效，覆盖用户设置需要清除网页数据
+- 站点信息（名称、描述、Logo、API 密钥）
+- 网站链接与社交链接（含图标库）
+- 背景配置
+- 前端默认设置（22 项，含壁纸、主题、音量、语言等）
 
-### 技术栈
+> 生产环境务必设置 `ADMIN_TOKEN` 环境变量以启用鉴权。
 
-- [Vue](https://cn.vuejs.org/)
-- [Vite](https://vitejs.cn/vite3-cn/)
-- [Pinia](https://pinia.vuejs.org/zh/)
-- [IconPark](https://iconpark.oceanengine.com/official)
-- [xicons](https://xicons.org/)
-- [TypeScript](https://www.typescriptlang.org/zh/)
-- [Aplayer](https://aplayer.js.org/)
+<p>&nbsp;<p>
 
-### API
+## API
 
 - [韩小韩 WebAPI 接口](https://api.vvhan.com/)
 - [搏天 API](https://api.btstu.cn/doc/sjbz.php)
@@ -300,15 +241,20 @@ coverType: "0", // 壁纸种类
 - [Meting API](https://github.com/injahow/meting-api)
 - [Meting API 酪灰修改版](https://github.com/NanoRocky/meting-api)
 
+>[!WARNING]
+> 强烈建议自行注册天气 Token，它们是免费且稳定的！内置的免费接口目前仅剩小米天气可正常工作，且拥有较高的速率限制，经常失效。
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=imsyy/home&type=Date)](https://star-history.com/#imsyy/home&Date)
 
 ## 特别鸣谢
+
 - [AMLL TTML Database](https://github.com/Steve-xmh/amll-ttml-db)
 - [Meting API](https://github.com/injahow/meting-api)
 
 ### 感谢原作者 imsyy 和帮助本项目的小伙伴们！
+
 - [imsyy](https://github.com/imsyy/)
 - [这个哔养得](https://github.com/pizeroLOL/)
 

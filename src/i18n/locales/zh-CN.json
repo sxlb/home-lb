@@ -1,0 +1,86 @@
+{
+  "common": {
+    "loading": "加载中",
+    "loadFailed": "加载失败",
+    "retry": "重试",
+    "close": "关闭",
+    "confirm": "确认",
+    "cancel": "取消"
+  },
+  "nav": {
+    "home": "首页",
+    "function": "功能",
+    "moreSettings": "更多设置"
+  },
+  "player": {
+    "loadFailed": "播放器加载失败",
+    "songLoadFailed": "歌曲加载失败",
+    "playerError": "播放器未知异常",
+    "playErrorNext": "播放歌曲出现错误，播放器将在 2s 后进行下一首",
+    "playError": "播放歌曲出现错误",
+    "nowPlaying": "正在播放",
+    "song": "的歌曲",
+    "previous": "上一首",
+    "next": "下一首",
+    "play": "播放",
+    "pause": "暂停"
+  },
+  "weather": {
+    "loadFailed": "天气加载失败",
+    "unableToCalculate": "天气信息无法计算"
+  },
+  "background": {
+    "loadFailed": "壁纸加载失败",
+    "idSetFailed": "壁纸ID设置失败",
+    "idSetSuccess": "壁纸ID设置成功",
+    "previewEnabled": "壁纸预览已启用",
+    "previewDisabled": "壁纸预览已退出"
+  },
+  "hitokoto": {
+    "loadFailed": "一言加载失败"
+  },
+  "time": {
+    "today": "今天"
+  },
+  "loading": {
+    "loadingText": "加载中"
+  },
+  "notComputer": {
+    "title": "请在电脑上访问",
+    "desc": "本页面暂未适配移动端"
+  },
+  "set": {
+    "devSettings": "开发者设置",
+    "resetConfig": "重置配置",
+    "language": "语言",
+    "zhCN": "简体中文",
+    "en": "English",
+    "checkUpdate": "检查更新",
+    "resetting": "正在恢复默认配置，请稍后...",
+    "resetConfirm": "确定要恢复默认配置吗？",
+    "resetSuccess": "重置成功",
+    "resetFailed": "重置失败"
+  },
+  "speech": {
+    "nowPlaying": "正在播放，{artist}的歌曲，{name}。",
+    "welcome": "欢迎",
+    "welcomeBack": "欢迎回来"
+  },
+  "footer": {
+    "progressIconEnabled": "已启用进度图标常驻",
+    "progressIconDisabled": "已禁用进度图标常驻"
+  },
+  "message": {
+    "resolutionTooLow": "分辨率不足",
+    "surprise": "惊讶"
+  },
+  "main": {
+    "siteUpdated": "网站已更新，请刷新网页嗷！",
+    "configWarning": "检测到您似乎没有创建配置文件，项目可能出现异常！",
+    "configWarningTitle": "警告",
+    "continue": "继续",
+    "cancelText": "取消",
+    "cancelled": "已取消",
+    "configNotEnabled": "警告：您似乎没有启用配置文件，项目可能出现异常！请配置 .env 或 runtime-config.json 文件后再运行项目！"
+  }
+}

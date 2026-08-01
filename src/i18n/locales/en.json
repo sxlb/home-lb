@@ -1,0 +1,86 @@
+{
+  "common": {
+    "loading": "Loading",
+    "loadFailed": "Loading failed",
+    "retry": "Retry",
+    "close": "Close",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "nav": {
+    "home": "Home",
+    "function": "Features",
+    "moreSettings": "More Settings"
+  },
+  "player": {
+    "loadFailed": "Player failed to load",
+    "songLoadFailed": "Song failed to load",
+    "playerError": "Player unknown error",
+    "playErrorNext": "Error playing song, player will skip to next in 2s",
+    "playError": "Error playing song",
+    "nowPlaying": "Now playing",
+    "song": "by",
+    "previous": "Previous",
+    "next": "Next",
+    "play": "Play",
+    "pause": "Pause"
+  },
+  "weather": {
+    "loadFailed": "Weather failed to load",
+    "unableToCalculate": "Unable to calculate weather info"
+  },
+  "background": {
+    "loadFailed": "Wallpaper failed to load",
+    "idSetFailed": "Wallpaper ID setting failed",
+    "idSetSuccess": "Wallpaper ID set successfully",
+    "previewEnabled": "Wallpaper preview enabled",
+    "previewDisabled": "Wallpaper preview disabled"
+  },
+  "hitokoto": {
+    "loadFailed": "Hitokoto failed to load"
+  },
+  "time": {
+    "today": "Today"
+  },
+  "loading": {
+    "loadingText": "Loading"
+  },
+  "notComputer": {
+    "title": "Please access on a computer",
+    "desc": "This page is not yet adapted for mobile"
+  },
+  "set": {
+    "devSettings": "Developer Settings",
+    "resetConfig": "Reset Config",
+    "language": "Language",
+    "zhCN": "简体中文",
+    "en": "English",
+    "checkUpdate": "Check Update",
+    "resetting": "Restoring default config, please wait...",
+    "resetConfirm": "Are you sure to reset to default config?",
+    "resetSuccess": "Reset successful",
+    "resetFailed": "Reset failed"
+  },
+  "speech": {
+    "nowPlaying": "Now playing {name} by {artist}.",
+    "welcome": "Welcome",
+    "welcomeBack": "Welcome back"
+  },
+  "footer": {
+    "progressIconEnabled": "Progress icon always-on enabled",
+    "progressIconDisabled": "Progress icon always-on disabled"
+  },
+  "message": {
+    "resolutionTooLow": "Resolution too low",
+    "surprise": "Surprise"
+  },
+  "main": {
+    "siteUpdated": "Website updated, please refresh!",
+    "configWarning": "It seems you haven't created a config file, the project may not work properly!",
+    "configWarningTitle": "Warning",
+    "continue": "Continue",
+    "cancelText": "Cancel",
+    "cancelled": "Cancelled",
+    "configNotEnabled": "Warning: It seems config file is not enabled, the project may have issues! Please configure .env or runtime-config.json before running!"
+  }
+}

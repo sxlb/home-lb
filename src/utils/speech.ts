@@ -1,4 +1,5 @@
 import { gasA, gasC } from "@/utils/authServer";
+import i18n from "@/i18n";
 
 let currentAudio: HTMLAudioElement | null = null;
 let audioQueue: string[] = [];
@@ -24,9 +25,18 @@ let audioUrlS: string | null = null;
  * @param {number} [delay=1500] - 等待时间【毫秒】后发出请求，防止频繁点击产生请求洪水（默认为等待1500毫秒）
  * @returns {Promise<void>} - 一个 Promise，在语音播放完成时解析或出现错误时拒绝
  */
+/**
+ * 根据当前语言获取默认 voice
+ * 中文用云夏，英文用 Jenny
+ */
+function getDefaultVoice(): string {
+  const lang = i18n.global.locale.value;
+  return lang === "zh-CN" ? "zh-CN-YunxiaNeural" : "en-US-JennyNeural";
+}
+
 export function Speech(
   text,
-  voice = "zh-CN-YunxiaNeural",
+  voice = getDefaultVoice(),
   style = "cheerful",
   role = "Boy",
   rate = "1",

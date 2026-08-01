@@ -114,8 +114,10 @@ import { mainStore } from "@/store";
 import config from "@/../package.json";
 import { ref, watch, computed, onMounted, nextTick, onUpdated, onBeforeUnmount } from "vue";
 import { throttle } from "lodash-es";
+import { useI18n } from "vue-i18n";
 
 const store = mainStore();
+const { t } = useI18n();
 const fullYear = new Date().getFullYear();
 const lrcContainer = ref(null);
 const scrollPosition = ref(0);
@@ -157,7 +159,7 @@ const toggleForceIcon = () => {
   store.forceShowBarIcon = !store.forceShowBarIcon;
   ElMessage({
     dangerouslyUseHTMLString: true,
-    message: `${store.forceShowBarIcon ? '诶？' : '进度 ICON 常驻已禁用'}`,
+    message: store.forceShowBarIcon ? t("footer.progressIconEnabled") : t("footer.progressIconDisabled"),
   });
   if (store.forceShowBarIcon) {
     if (store.webSpeech) {

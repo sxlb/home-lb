@@ -23,9 +23,11 @@ import { initFirefly, closeFirefly } from "@/utils/season/firefly";
 import { initLantern, closeLantern } from "@/utils/season/lantern";
 import { ref, h, nextTick } from 'vue';
 import { gasC } from "@/utils/authServer";
+import { useI18n } from "vue-i18n";
 
 
 const store = mainStore();
+const { t } = useI18n();
 const currentBgUrl = ref(null);
 const nextBgUrl = ref(null);
 const isTransitioning = ref(false);
@@ -146,7 +148,7 @@ const changeBg = async (type) => {
       if (!result.ok) {
         console.error("壁纸加载失败：", currentBgUrl.value);
         ElMessage({
-          message: "壁纸加载失败，已临时切换回默认",
+          message: t("background.loadFailed"),
           icon: h(Error, {
             theme: "filled",
             fill: "var(--el-message-icon-color)",
@@ -246,7 +248,7 @@ const imgAnimationEnd = () => {
 const imgLoadError = async () => {
   console.error("壁纸加载失败");
   ElMessage({
-    message: "壁纸加载失败，已临时切换回默认",
+    message: t("background.loadFailed"),
     icon: h(Error, {
       theme: "filled",
       fill: "var(--el-message-icon-color)",

@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <div class="item">
-                    <el-button plain class="el-button" @click="checkUpdate()">检查更新</el-button>
+                    <el-button plain class="el-button" @click="checkUpdate()">{{ t("set.checkUpdate") }}</el-button>
                 </div>
             </el-collapse-item>
         </el-collapse>
@@ -78,6 +78,7 @@ import { initLantern, closeLantern } from "@/utils/season/lantern";
 import { parseVersion } from "@/utils/ver";
 import { checkForUpdate } from "@/utils/updatecheck";
 import config from "@/../package.json";
+import { useI18n } from "vue-i18n";
 const activeName = ref("0");
 const store = mainStore();
 const {
@@ -103,6 +104,7 @@ const {
     playerDWRCPilfer,
     autoBGSwitchInterval
 } = storeToRefs(store);
+const { t } = useI18n();
 
 const versionInfo = parseVersion(config.version);
 let chuores = 0;
@@ -182,7 +184,7 @@ const resetSettings = () => {
     if (chuores === 3) {
         ElMessage({
             dangerouslyUseHTMLString: true,
-            message: `正在恢复默认配置，请稍后...`,
+            message: t("set.resetting"),
         });
         if (store.webSpeech) {
             stopSpeech();

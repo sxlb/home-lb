@@ -17,6 +17,7 @@ import "element-plus/dist/index.css";
 import "swiper/css";
 import "uno.css";
 
+const { t } = i18n.global;
 const app = createApp(App);
 const pinia = createPinia();
 
@@ -38,7 +39,7 @@ const mountApp = () => {
   if (urlParams.get("set") === "reset") {
     ElMessage({
       dangerouslyUseHTMLString: true,
-      message: `正在恢复默认配置，请稍后...`,
+      message: t("set.resetting"),
     });
     if (store.webSpeech) {
       stopSpeech();
@@ -52,8 +53,8 @@ const mountApp = () => {
   // PWA
   navigator.serviceWorker.addEventListener("controllerchange", async () => {
     // 弹出更新提醒
-    console.log("网站已更新，请刷新网页嗷！");
-    ElMessage("网站已更新，请刷新网页嗷！");
+    console.log(t("main.siteUpdated"));
+    ElMessage(t("main.siteUpdated"));
     if (store.webSpeech) {
       stopSpeech();
       const voice = envConfig.VITE_TTS_Voice;
@@ -94,13 +95,13 @@ const mountApp = () => {
     if (appEl) {
       appEl.style.display = "none";
     };
-    console.error(`警告：您似乎没有启用配置文件，项目可能出现异常！请配置 .env 或 runtime-config.json 文件后再运行项目！`);
+    console.error(t("main.configNotEnabled"));
     ElMessageBox.confirm(
-      '检测到您似乎没有创建配置文件，项目可能出现异常！',
-      '警告',
+      t("main.configWarning"),
+      t("main.configWarningTitle"),
       {
-        confirmButtonText: '继续',
-        cancelButtonText: '取消',
+        confirmButtonText: t("main.continue"),
+        cancelButtonText: t("main.cancelText"),
         type: 'warning',
       }
     )
@@ -110,7 +111,7 @@ const mountApp = () => {
       .catch(() => {
         ElMessage({
           type: 'info',
-          message: '已取消',
+          message: t("main.cancelled"),
         })
       });
   } else {

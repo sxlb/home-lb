@@ -14,8 +14,10 @@ import type { APlayer as APlayerType } from '@worstone/vue-aplayer';
 import { Speech, stopSpeech, SpeechLocal } from "@/utils/speech";
 import { decodeDWQYRC } from "@/utils/decodeDWQYRC";
 import { alignPilferedLyrics } from "@/utils/checkPilferDWRC";
+import { useI18n } from "vue-i18n";
 
 const store = mainStore();
+const { t } = useI18n();
 let showDWRCRunning = 0;
 let lastTimestamp = Date.now();
 let nowLineStart: number = -1;
@@ -164,7 +166,7 @@ onMounted(() => {
       console.error(err);
       store.musicIsOk = false;
       ElMessage({
-        message: "播放器加载失败",
+        message: t("player.loadFailed"),
         grouping: true,
         icon: h(PlayWrong, {
           theme: "filled",
@@ -226,11 +228,7 @@ const onPlay = () => {
       const voice = envConfig.VITE_TTS_Voice;
       const vstyle = envConfig.VITE_TTS_Style;
       Speech(
-        "正在播放，“" +
-        store.getPlayerData.artist +
-        "”的歌曲，《" +
-        store.getPlayerData.name +
-        "》。",
+        t("speech.nowPlaying", { artist: store.getPlayerData.artist, name: store.getPlayerData.name }),
         voice,
         vstyle,
       );
@@ -336,7 +334,7 @@ const loadMusicError = () => {
       SpeechLocal("歌曲加载失败.mp3");
     };
   } else {
-    notice = "播放歌曲出现错误";
+    notice = t("player.playError");
     if (store.webSpeech) {
       stopSpeech();
       const voice = envConfig.VITE_TTS_Voice;

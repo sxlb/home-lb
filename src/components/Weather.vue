@@ -38,8 +38,10 @@ import type {
   XMWeatherStatusItem,
   XMWeatherStatusData
 } from "@/typings/weather";
+import { useI18n } from "vue-i18n";
 
 const store = mainStore();
+const { t } = useI18n();
 
 // 加载密钥
 const txkey = envConfig.VITE_TX_WEATHER_KEY; // 腾讯天气密钥
@@ -357,7 +359,7 @@ const getWeatherData = async () => {
     };
   } catch (error) {
     console.error("天气信息获取失败：" + error);
-    onError("天气信息获取失败");
+    onError(t("weather.loadFailed"));
     if (store.webSpeech) {
       stopSpeech();
       const voice = envConfig.VITE_TTS_Voice;

@@ -24,8 +24,10 @@ import { getHitokoto } from "@/api";
 import { mainStore } from "@/store";
 import debounce from "@/utils/debounce.js";
 import { Speech, stopSpeech, SpeechLocal } from "@/utils/speech";
+import { useI18n } from "vue-i18n";
 
 const store = mainStore();
+const { t } = useI18n();
 
 // 开启音乐面板按钮显隐
 const openMusicShow = ref(false);
@@ -44,7 +46,7 @@ const getHitokotoData = async () => {
     hitokotoData.from = result.from;
   } catch (error) {
     ElMessage({
-      message: "一言获取失败",
+      message: t("hitokoto.loadFailed"),
       icon: h(Error, {
         theme: "filled",
         fill: "var(--el-message-icon-color)",

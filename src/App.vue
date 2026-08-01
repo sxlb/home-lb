@@ -45,8 +45,10 @@ import cursorInit from "@/utils/cursor.js";
 import config from "@/../package.json";
 import { Speech, stopSpeech, SpeechLocal } from "@/utils/speech";
 import { getColor } from "@/utils/getColor";
+import { useI18n } from "vue-i18n";
 
 const store = mainStore();
+const { t } = useI18n();
 const timeThemeInterval = ref<any>(null);
 
 // 页面宽度
@@ -161,7 +163,7 @@ onMounted(() => {
     if (event.button == 1) {
       store.backgroundShow = !store.backgroundShow;
       ElMessage({
-        message: `已${store.backgroundShow ? "开启" : "退出"}壁纸展示状态`,
+        message: store.backgroundShow ? t("background.previewEnabled") : t("background.previewDisabled"),
         grouping: true,
       });
       if (store.webSpeech) {

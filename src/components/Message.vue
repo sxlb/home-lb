@@ -35,7 +35,9 @@ import { QuoteLeft, QuoteRight } from "@vicons/fa";
 import { Error } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
 import { Speech, stopSpeech, SpeechLocal } from "@/utils/speech";
+import { useI18n } from "vue-i18n";
 const store = mainStore();
+const { t } = useI18n();
 
 // 主页站点logo
 const siteLogo = envConfig.VITE_SITE_MAIN_LOGO;
@@ -71,7 +73,7 @@ const changeBox = () => {
     store.boxOpenState = !store.boxOpenState;
   } else {
     ElMessage({
-      message: "当前显示分辨率不足以打开拓展盒子啦qwq【这么“小”还想开impart！（bushi）】",
+      message: t("message.resolutionTooLow"),
       grouping: true,
       icon: h(Error, {
         theme: "filled",

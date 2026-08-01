@@ -1,0 +1,59 @@
+{
+  "nav": {
+    "siteInfo": "Site Info",
+    "siteLinks": "Site Links",
+    "socialLinks": "Social Links",
+    "bgConfig": "Background Config",
+    "defaults": "Frontend Defaults"
+  },
+  "common": {
+    "save": "Save",
+    "saveSuccess": "Saved successfully",
+    "saveFailed": "Save failed",
+    "reset": "Reset to code defaults",
+    "loading": "Loading...",
+    "noData": "No data",
+    "name": "Name",
+    "link": "Link",
+    "icon": "Icon",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure to delete this item?",
+    "backup": "Backup",
+    "restore": "Restore",
+    "token": "Admin Token",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "siteInfo": {
+    "title": "Site Name",
+    "description": "Site Description",
+    "logo": "Site Logo",
+    "apiKeys": "API Keys",
+    "musicApi": "Music API URL",
+    "musicServer": "Music Server",
+    "weatherKey": "Weather Key"
+  },
+  "defaults": {
+    "title": "Frontend Defaults",
+    "description": "Values configured here will be used as defaults for new visitors on their first visit. Settings for returning users are stored in browser localStorage and are not affected.",
+    "coverType": "Wallpaper Type",
+    "autoBGSwitch": "Auto Switch Wallpaper",
+    "noSwitch": "No switch",
+    "seasonalEffects": "Seasonal Effects",
+    "theme": "Theme",
+    "volume": "Volume",
+    "language": "Default Language",
+    "saveButton": "Save Frontend Defaults",
+    "resetButton": "Reset to code defaults",
+    "saveSuccess": "Frontend defaults saved successfully",
+    "resetSuccess": "Reset to code defaults"
+  },
+  "auth": {
+    "title": "Admin Panel",
+    "tokenPrompt": "Please enter admin token",
+    "login": "Login",
+    "unauthorized": "Unauthorized access"
+  }
+}

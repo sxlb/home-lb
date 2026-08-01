@@ -1,0 +1,59 @@
+{
+  "nav": {
+    "siteInfo": "站点信息",
+    "siteLinks": "网站链接",
+    "socialLinks": "社交链接",
+    "bgConfig": "背景配置",
+    "defaults": "前端默认设置"
+  },
+  "common": {
+    "save": "保存",
+    "saveSuccess": "保存成功",
+    "saveFailed": "保存失败",
+    "reset": "恢复代码默认值",
+    "loading": "加载中...",
+    "noData": "暂无数据",
+    "name": "名称",
+    "link": "链接",
+    "icon": "图标",
+    "add": "新增",
+    "edit": "编辑",
+    "delete": "删除",
+    "confirmDelete": "确认删除此项？",
+    "backup": "备份",
+    "restore": "恢复",
+    "token": "管理 Token",
+    "login": "登录",
+    "logout": "退出"
+  },
+  "siteInfo": {
+    "title": "站点名称",
+    "description": "站点描述",
+    "logo": "站点 Logo",
+    "apiKeys": "API 密钥",
+    "musicApi": "音乐 API 地址",
+    "musicServer": "音乐服务器",
+    "weatherKey": "天气 Key"
+  },
+  "defaults": {
+    "title": "前端默认设置",
+    "description": "此处配置的值将作为新访客首次访问时的默认设置，已访问过的用户设置保存在浏览器 localStorage 中，不受此配置影响。",
+    "coverType": "壁纸种类",
+    "autoBGSwitch": "自动切换壁纸",
+    "noSwitch": "不切换",
+    "seasonalEffects": "季节特效",
+    "theme": "主题",
+    "volume": "音量",
+    "language": "默认语言",
+    "saveButton": "保存前端默认设置",
+    "resetButton": "恢复代码默认值",
+    "saveSuccess": "前端默认设置保存成功",
+    "resetSuccess": "已恢复代码默认值"
+  },
+  "auth": {
+    "title": "管理后台",
+    "tokenPrompt": "请输入管理 Token",
+    "login": "登录",
+    "unauthorized": "未授权访问"
+  }
+}

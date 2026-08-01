@@ -38,6 +38,8 @@
   "defaults": {
     "title": "前端默认设置",
     "description": "此处配置的值将作为新访客首次访问时的默认设置，已访问过的用户设置保存在浏览器 localStorage 中，不受此配置影响。",
+    "descStart": "此处配置的值将作为",
+    "descEnd": "时的默认设置。已自行调整过设置的老用户不受影响（浏览器 localStorage 优先级更高）。留空则使用代码默认值。",
     "coverType": "壁纸种类",
     "autoBGSwitch": "自动切换壁纸",
     "noSwitch": "不切换",

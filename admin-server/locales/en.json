@@ -38,6 +38,8 @@
   "defaults": {
     "title": "Frontend Defaults",
     "description": "Values configured here will be used as defaults for new visitors on their first visit. Settings for returning users are stored in browser localStorage and are not affected.",
+    "descStart": "Values configured here will be used as ",
+    "descEnd": " defaults for new visitors. Settings for returning users take precedence (browser localStorage). Leave empty to use code defaults.",
     "coverType": "Wallpaper Type",
     "autoBGSwitch": "Auto Switch Wallpaper",
     "noSwitch": "No switch",

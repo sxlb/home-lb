@@ -18,6 +18,13 @@
         </div>
         <div class="mobileset-scrollable">
           <Set />
+          <div class="item">
+            <span class="text">{{ t('set.language') }}</span>
+            <el-select v-model="language" size="small" style="width: 120px">
+              <el-option :label="t('set.zhCN')" value="zh-CN" />
+              <el-option :label="t('set.en')" value="en" />
+            </el-select>
+          </div>
         </div>
         <div class="version">
           <div class="num" @dblclick="toggleVer">v&nbsp;{{ config.version }}</div>
@@ -75,6 +82,13 @@
         </div>
         <div class="set-scrollable">
           <Set />
+          <div class="item">
+            <span class="text">{{ t('set.language') }}</span>
+            <el-select v-model="language" size="small" style="width: 120px">
+              <el-option :label="t('set.zhCN')" value="zh-CN" />
+              <el-option :label="t('set.en')" value="en" />
+            </el-select>
+          </div>
         </div>
       </el-col>
     </el-row>
@@ -87,8 +101,10 @@ import { Speech, stopSpeech, SpeechLocal } from "@/utils/speech";
 import { mainStore } from "@/store";
 import Set from "@/components/Set.vue";
 import config from "@/../package.json";
+import { useI18n } from "vue-i18n";
 
 const store = mainStore();
+const { t, locale } = useI18n();
 const closeShow = ref(false);
 let chuover = 0;
 
@@ -102,6 +118,17 @@ const siteUrl = computed(() => {
   const domainOnly = urlFormat.split('/')[0];
   const hostname = domainOnly.split(':')[0];
   return hostname.split(".");
+});
+
+// 语言切换
+const language = computed({
+  get: () => store.language,
+  set: (val: "zh-CN" | "en") => {
+    store.language = val;
+    locale.value = val;
+    localStorage.setItem("language", val);
+    document.documentElement.lang = val;
+  },
 });
 
 // 更新日志
@@ -314,6 +341,19 @@ const jumpTo = (url) => {
       .set-scrollable {
         flex: 1;
         overflow-y: auto;
+
+        .item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          font-size: 14px;
+          padding: 12px 0;
+
+          .text {
+            color: var(--text-color);
+          }
+        }
       }
     }
   }
@@ -394,6 +434,19 @@ const jumpTo = (url) => {
       .mobileset-scrollable {
         flex: 1;
         overflow-y: auto;
+
+        .item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          font-size: 14px;
+          padding: 12px 0;
+
+          .text {
+            color: var(--text-color);
+          }
+        }
       }
 
       .version {

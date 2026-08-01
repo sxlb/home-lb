@@ -196,6 +196,9 @@ app.post("/api/bg-config", authMiddleware, async (req, res) => {
 
 // ============ 静态资源 ============
 
+// 后台语言包
+app.use("/admin/locales", express.static(path.join(__dirname, "locales")));
+
 // 管理后台 UI
 app.use("/admin", express.static(path.join(__dirname, "public")));
 

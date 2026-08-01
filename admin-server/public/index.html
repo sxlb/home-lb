@@ -1627,6 +1627,7 @@
         });
         applyTranslations();
         updateLangButtons(saved);
+        document.documentElement.lang = saved;
       } catch (e) {
         console.error('语言包加载失败，回退到内联文本', e);
       }
@@ -1644,6 +1645,7 @@
       localStorage.setItem('admin-lang', lang);
       applyTranslations();
       updateLangButtons(lang);
+      document.documentElement.lang = lang;
     }
 
     function updateLangButtons(lang) {

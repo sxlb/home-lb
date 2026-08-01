@@ -2,6 +2,12 @@ import { h } from "vue";
 import { SpaCandle } from "@icon-park/vue-next";
 import { Speech, stopSpeech, SpeechLocal } from "@/utils/speech";
 import dayjs from "dayjs";
+import i18n from "@/i18n";
+import "dayjs/locale/zh-cn";
+import "dayjs/locale/en";
+
+// 根据当前语言设置 dayjs locale
+dayjs.locale(i18n.global.locale.value === "zh-CN" ? "zh-cn" : "en");
 
 // 时钟
 export const getCurrentTime = () => {
@@ -12,7 +18,7 @@ export const getCurrentTime = () => {
   let hour = time.getHours() < 10 ? "0" + time.getHours() : time.getHours();
   let minute = time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes();
   let second = time.getSeconds() < 10 ? "0" + time.getSeconds() : time.getSeconds();
-  let weekday = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+  let weekday = i18n.global.tm("time.weekdays") as string[];
   let currentTime = {
     year,
     month,
@@ -29,10 +35,10 @@ export const getCurrentTime = () => {
 export const getTimeCapsule = () => {
   const now = dayjs();
   const dayText = {
-    day: "今日",
-    week: "本周",
-    month: "本月",
-    year: "本年",
+    day: i18n.global.t("time.capsule.day"),
+    week: i18n.global.t("time.capsule.week"),
+    month: i18n.global.t("time.capsule.month"),
+    year: i18n.global.t("time.capsule.year"),
   };
   /**
    * 计算时间差的函数
@@ -76,34 +82,34 @@ export const helloInit = (store) => {
   let hellosound: string | null = null;
   stopSpeech();
   if (hour < 5) {
-    hello = "凌晨好，该睡了啦！";
+    hello = i18n.global.t("time.hello.midnight") + "，该睡了啦！";
     hellosound = "欢迎1.mp3";
   } else if (hour < 7) {
-    hello = "早上好，起的真早哦~";
+    hello = i18n.global.t("time.hello.earlyMorning") + "，起的真早哦~";
     hellosound = "欢迎2.mp3";
   } else if (hour < 9) {
-    hello = "早上好，又是新的一天~";
+    hello = i18n.global.t("time.hello.morning") + "，又是新的一天~";
     hellosound = "欢迎3.mp3";
   } else if (hour < 11) {
-    hello = "上午好！";
+    hello = i18n.global.t("time.hello.morning") + "！";
     hellosound = "欢迎4.mp3";
   } else if (hour < 14) {
-    hello = "中午好，辛苦了一个上午，补充下能量吧~";
+    hello = i18n.global.t("time.hello.noon") + "，辛苦了一个上午，补充下能量吧~";
     hellosound = "欢迎5.mp3";
   } else if (hour < 17) {
-    hello = "下午好！";
+    hello = i18n.global.t("time.hello.afternoon") + "！";
     hellosound = "欢迎6.mp3";
   } else if (hour < 18) {
-    hello = "傍晚好，吃顿美味的晚餐休息休息吧~";
+    hello = i18n.global.t("time.hello.evening") + "，吃顿美味的晚餐休息休息吧~";
     hellosound = "欢迎7.mp3";
   } else if (hour < 22) {
-    hello = "晚上好，娱乐一下，放松心情~";
+    hello = i18n.global.t("time.hello.night") + "，娱乐一下，放松心情~";
     hellosound = "欢迎8.mp3";
   } else if (hour < 23) {
-    hello = "深夜好！夜深了，晚安噢w";
+    hello = i18n.global.t("time.hello.lateNight") + "！夜深了，晚安噢w";
     hellosound = "欢迎9.mp3";
   } else {
-    hello = "深夜好！都快凌晨了啦，早点休息哦~";
+    hello = i18n.global.t("time.hello.lateNight") + "！都快凌晨了啦，早点休息哦~";
     hellosound = "欢迎10.mp3";
   };
   ElMessage({
@@ -160,5 +166,5 @@ export const siteDateStatistics = (startDate) => {
     months += 12;
   }
 
-  return `本站已经苟活了 ${years} 年 ${months} 月 ${days} 天`;
+  return i18n.global.t("time.siteLiveFor", { years, months, days });
 };

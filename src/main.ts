@@ -27,6 +27,13 @@ pinia.use(validationPlugin);
 app.use(pinia);
 app.use(i18n);
 
+// 同步 i18n 语言与 store 语言配置
+const store = mainStore();
+if (store.language) {
+  i18n.global.locale.value = store.language;
+  document.documentElement.lang = store.language;
+}
+
 const mountApp = () => {
   const appEl = document.getElementById("app");
   if (appEl) {

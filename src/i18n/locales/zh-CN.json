@@ -40,7 +40,21 @@
     "loadFailed": "一言加载失败"
   },
   "time": {
-    "today": "今天"
+    "today": "今天",
+    "weekdays": ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+    "capsule": { "day": "今日", "week": "本周", "month": "本月", "year": "本年" },
+    "hello": {
+      "midnight": "凌晨好",
+      "earlyMorning": "清晨好",
+      "morning": "早上好",
+      "noon": "中午好",
+      "afternoon": "下午好",
+      "evening": "傍晚好",
+      "night": "晚上好",
+      "lateNight": "深夜好"
+    },
+    "siteLiveFor": "本站已经苟活了 {years} 年 {months} 月 {days} 天",
+    "days": "天"
   },
   "loading": {
     "loadingText": "加载中"

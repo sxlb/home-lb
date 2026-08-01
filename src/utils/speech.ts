@@ -191,6 +191,10 @@ export function SpeechLocal(
   fileName: string,
   delay = 0
 ): Promise<void> {
+  // 英文环境下跳过中文预生成音频
+  if (i18n.global.locale.value !== "zh-CN") {
+    return Promise.resolve();
+  }
   return new Promise<void>(async (resolve, reject) => {
     if (!fileName) {
       reject(new Error("No file name provided"));

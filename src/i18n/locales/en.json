@@ -40,7 +40,21 @@
     "loadFailed": "Hitokoto failed to load"
   },
   "time": {
-    "today": "Today"
+    "today": "Today",
+    "weekdays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "capsule": { "day": "Today", "week": "This Week", "month": "This Month", "year": "This Year" },
+    "hello": {
+      "midnight": "Good midnight",
+      "earlyMorning": "Good early morning",
+      "morning": "Good morning",
+      "noon": "Good noon",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening",
+      "night": "Good night",
+      "lateNight": "Good late night"
+    },
+    "siteLiveFor": "This site has been running for {years} years {months} months {days} days",
+    "days": "days"
   },
   "loading": {
     "loadingText": "Loading"

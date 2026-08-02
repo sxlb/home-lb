@@ -32,7 +32,7 @@
 
 ## 项目介绍
 
-無名の主页是一个基于 Vue 3 + TypeScript 的个人主页项目，具有载入动画、站点简介、一言、日期时间、实时天气、时光进度条、音乐播放器、逐字歌词、移动端适配等功能。
+無名の主页是一个基于 Vue 3 + TypeScript 的个人主页项目（版本 4.3.9.dev），具有载入动画、站点简介、一言、日期时间、实时天气、时光进度条、音乐播放器、逐字歌词、移动端适配等功能。
 
 本项目在原作者 [imsyy](https://github.com/imsyy/) 的基础上，由酪灰（[NanoRocky](https://github.com/NanoRocky/)）与 Pizero 进行了二次开发，新增了管理后台、i18n 国际化、逐字歌词兼容、季节特效等功能。
 
@@ -42,26 +42,55 @@
 - [x] 站点简介
 - [x] Hitokoto 一言
 - [x] 日期及时间
-- [x] 实时天气（多源聚合，腾讯/高德/小米）
+- [x] 实时天气（多源聚合，腾讯/高德/小米/韩小韩/教书先生）
 - [x] 时光进度条
-- [x] 音乐播放器（APlayer + 逐字歌词）
+- [x] 音乐播放器（APlayer + 逐字歌词 DWRC/YRC/QRC）
 - [x] 移动端适配
-- [x] 逐字歌词兼容（DWRC/YRC/QRC）
-- [x] 季节特效（雪花/萤火虫/灯笼）
-- [x] 管理后台（在线配置，无需重新构建）
-- [x] i18n 国际化（中英文双语）
+- [x] 季节特效（雪花/萤火虫/灯笼，Canvas 渲染）
+- [x] 管理后台（Express + 在线配置，无需重新构建）
+- [x] i18n 国际化（中英文双语，vue-i18n）
 - [x] PWA 离线缓存与自动更新
+- [x] 语音交互（预生成音频 + Azure TTS 实时合成）
 
 ### 技术栈
 
 - [Vue 3](https://cn.vuejs.org/) + [TypeScript](https://www.typescriptlang.org/zh/)
-- [Vite](https://vitejs.cn/vite3-cn/) + [Pinia](https://pinia.vuejs.org/zh/)
+- [Vite](https://vitejs.cn/vite3-cn/) + [Pinia](https://pinia.vuejs.org/zh/)（含持久化与校验插件）
 - [Element Plus](https://element-plus.org/zh-CN/)
-- [APlayer](https://aplayer.js.org/) 音乐播放器
+- [@worstone/vue-aplayer](https://aplayer.js.org/) 音乐播放器
 - [UnoCSS](https://unocss.dev/) 原子化 CSS
 - [vue-i18n](https://vue-i18n.intlify.dev/) 国际化
-- [IconPark](https://iconpark.oceanengine.com/official) + [xicons](https://xicons.org/)
+- [Swiper](https://swiperjs.com/) 触摸滑动
+- [Three.js](https://threejs.org/) + [jparticles](https://jparticles.js.org/) 粒子动画
 - [Express](https://expressjs.com/) 管理后台
+- [IconPark](https://iconpark.oceanengine.com/official) + [xicons](https://xicons.org/) 图标
+
+### 项目结构
+
+```
+home/
+├── admin-server/          # 管理后台（Express）
+│   ├── locales/            # 后台语言包（zh-CN/en）
+│   ├── public/             # 后台 UI（index.html）
+│   └── server.js           # API 服务 + 静态资源 + SPA 路由
+├── public/                 # 静态资源
+│   ├── font/               # 字体（MiSans/Pacifico/UnidreamLED）
+│   ├── images/             # 壁纸、图标、config.json
+│   └── speechlocal/        # 预生成语音文件
+├── scripts/                # 部署脚本（sh/ps1）
+├── src/
+│   ├── api/                # API 请求
+│   ├── assets/             # 站点配置（siteLinks/socialLinks/example_config）
+│   ├── components/          # 16 个 Vue 组件
+│   ├── i18n/               # 国际化（语言包 + 初始化）
+│   ├── store/              # Pinia store（含持久化、校验插件）
+│   ├── style/              # 全局样式（明/暗主题）
+│   ├── utils/              # 工具函数（天气/语音/歌词/时间/季节特效等）
+│   └── views/              # 页面视图（Box/Func/Main/MoreSet）
+├── docs/                   # 15 篇项目文档
+├── Dockerfile              # 三阶段构建（web-builder → admin-builder → 运行时）
+└── docker-compose.yml      # 单容器编排
+```
 
 ### Demo
 
@@ -219,7 +248,7 @@ cd /opt/home
 docker compose --env-file .env.deploy up -d --build
 ```
 
-或在 1Panel 的「容器 → 编排」中添加Compose 项目，指向 `/opt/home/docker-compose.yml`，环境变量文件选择 `/opt/home/.env.deploy`。
+或在 1Panel 的「容器 → 编排」中添加 Compose 项目，指向 `/opt/home/docker-compose.yml`，环境变量文件选择 `/opt/home/.env.deploy`。
 
 **步骤 5：配置反向代理**
 
@@ -243,25 +272,63 @@ docker compose --env-file .env.deploy up -d --build
 
 ```bash
 # 启用配置文件
-VITE_CONFIG_ENABLE=true
+VITE_CONFIG_TURN = "true"
 
 # 站点信息
-VITE_SITE_TITLE="無名の主页"
-VITE_SITE_DESC="一个个人主页"
+VITE_SITE_NAME = "無名の主页"          # 名称
+VITE_SITE_AUTHOR = "無名"              # 作者
+VITE_SITE_KEYWORDS = "無名,个人主页"    # 关键词
+VITE_SITE_MAIN_NAME = "無名"           # 自定义名
+VITE_SITE_DES = "一个默默无闻的主页"    # 站点简介
+VITE_SITE_URL = "https://imsyy.top/"   # 站点地址
+VITE_SITE_LOGO = "/images/icon/favicon.ico"
+VITE_SITE_MAIN_LOGO = "/images/icon/logo.png"
+VITE_SITE_APPLE_LOGO = "/images/icon/apple-touch-icon.png"
 
-# 天气 API（腾讯位置服务 / 高德开放平台）
-VITE_TENCENT_KEY=your-tencent-key
-VITE_AMAP_KEY=your-amap-key
+# 简介文本
+VITE_DESC_HELLO = "Hello World !"
+VITE_DESC_TEXT = "一个建立于 21 世纪的小站，存活于互联网的边缘"
+VITE_DESC_HELLO_OTHER = "Oops !"
+VITE_DESC_TEXT_OTHER = "哎呀，这都被你发现了（ 再点击一次可关闭 ）"
 
-# 音乐 API（建议自行搭建 Meting-Api）
-VITE_SONG_API="https://metingapi.nanorocky.top/"
-VITE_SONG_SERVER="netease"
-VITE_SONG_TYPE="playlist"
-VITE_SONG_ID="3035221869"
+# 天气 Key（腾讯位置服务 / 高德开放平台）
+VITE_TX_WEATHER_KEY = ""               # 腾讯位置服务 Key
+VITE_GD_WEATHER_KEY = ""               # 高德开放平台 Key
+VITE_TX_WEATHER_SKEY = ""              # 腾讯鉴权 SKEY（可选）
 
-# TTS 语音 API
-VITE_TTS_API=your-tts-api
+# 建站日期（YYYY-MM-DD 或 YYYY）
+VITE_SITE_START = "2020-10-24"
+
+# ICP 备案号
+VITE_SITE_ICP = ""
+VITE_SITE_MPS = ""
+
+# 音乐 API
+VITE_SONG_API = "https://metingapi.nanorocky.top/"
+VITE_SONG_SERVER = "netease"           # netease-网易云, tencent-qq音乐
+VITE_SONG_SERVER_SECOND = "tencent"   # 第二歌单服务器（可留空）
+VITE_SONG_TYPE = "playlist"            # song/playlist/album/search/artist
+VITE_SONG_ID = "9379831714"
+VITE_SONG_ID_SECOND = "9518088898"     # 第二歌单 ID（可留空）
+VITE_METING_SKEY = ""                  # Meting API 鉴权 SKEY（可选）
+
+# 文字转语音 API
+VITE_TTS_API = ""                      # 自行搭建
+VITE_TTS_Voice = "zh-CN-YunxiNeural"
+VITE_TTS_Style = "chat"
+VITE_TTS_SKEY = ""                     # TTS 鉴权 SKEY（可选）
+VITE_SFILE_SKEY = ""                   # 特殊文件 API 鉴权 SKEY（可选）
 ```
+
+### 天气
+
+天气及地区获取需要 `腾讯位置服务` 或 `高德开放平台` 的 Web 服务 Key：
+
+- [腾讯位置服务](https://lbs.qq.com/)：每日上限 10000 次，支持 IPV4/IPV6，推荐
+- [高德开放平台](https://console.amap.com/dev/index)：每日上限 5000 次，不支持 IPV6
+
+>[!WARNING]
+> 强烈建议自行注册天气 Token，它们是免费且稳定的！内置的免费接口（韩小韩/教书先生/小米）目前仅剩小米天气可正常工作，且拥有较高的速率限制，经常失效。
 
 ### 网站链接
 
@@ -275,7 +342,7 @@ VITE_TTS_API=your-tts-api
 }
 ```
 
-图标在 `src/components/Links/index.vue` 中引入（可前往 [xicons](https://www.xicons.org) 自行挑选）。
+图标在 `src/components/Links.vue` 中引入（可前往 [xicons](https://www.xicons.org) 自行挑选）。
 
 ### 社交链接
 
@@ -303,6 +370,17 @@ VITE_TTS_API=your-tts-api
 
 如使用 Azure，可直接使用 [AzureSpeechAPI-by-PHP](https://github.com/NanoRocky/AzureSpeechAPI-by-PHP) 完成 API 部署。
 
+### 音乐
+
+> 本项目采用了 `APlayer` 音乐播放器，可实现快速自定义歌单。仅支持中国大陆地区。
+
+请在 `.env` 文件中更改歌曲相关参数实现自定义歌单列表。目前已支持设置两个歌单进行合并，如不需要，留空即可。
+
+如需使用网易云音乐逐字歌词，请使用 [修改版 Meting-Api](https://github.com/NanoRocky/meting-api/)。
+
+>[!WARNING]
+> 这里提供的 api 有较高的速率限制，且不太稳定，强烈建议自行搭建 Meting-API！注意：提供的 api 可能出现 Q 音接口抛 401 的情况，并非服务异常，Q 音接口需要将项目编译后挂到正常域名并使用 https only，使用正常 443 端口，才能正常工作。
+
 ### 管理后台
 
 部署后访问 `/admin` 路径即可使用管理后台，支持在线管理：
@@ -313,6 +391,13 @@ VITE_TTS_API=your-tts-api
 - 前端默认设置（22 项，含壁纸、主题、音量、语言等）
 
 > 生产环境务必设置 `ADMIN_TOKEN` 环境变量以启用鉴权。
+
+### 字体
+
+现采用 `MiSans` 和 `HarmonyOS Sans` 字体，采用字体拆分提升加载速度：
+
+- `https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap`
+- `https://s1.hdslb.com/bfs/static/jinkela/long/font/regular.css`
 
 <p>&nbsp;<p>
 
@@ -326,9 +411,6 @@ VITE_TTS_API=your-tts-api
 - [Hitokoto 一言](https://hitokoto.cn/)
 - [Meting API](https://github.com/injahow/meting-api)
 - [Meting API 酪灰修改版](https://github.com/NanoRocky/meting-api)
-
->[!WARNING]
-> 强烈建议自行注册天气 Token，它们是免费且稳定的！内置的免费接口目前仅剩小米天气可正常工作，且拥有较高的速率限制，经常失效。
 
 ## Star History
 

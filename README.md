@@ -147,6 +147,92 @@ pnpm build
 ![步骤1](/screenshots/step1.jpg)
 ![步骤2](/screenshots/step2.jpg)
 
+### 方式六：宝塔面板部署
+
+适用于已安装宝塔面板的服务器。
+
+**步骤 1：准备构建产物**
+
+本地或通过 GitHub Actions 构建出 `dist` 目录，将 `dist` 与 `public` 一起打包上传。
+
+**步骤 2：安装 Node.js**
+
+在宝塔面板的「软件商店」中搜索并安装 Node.js 版本管理器，选择 Node.js 24.x。
+
+**步骤 3：上传文件**
+
+将整个项目上传至服务器（如 `/www/wwwroot/home`），或仅上传 `dist`、`public`、`admin-server` 三个目录。
+
+**步骤 4：安装 admin-server 依赖**
+
+在宝塔终端中执行：
+
+```bash
+cd /www/wwwroot/home/admin-server
+npm install --omit=dev
+```
+
+**步骤 5：配置 PM2 守护进程**
+
+在宝塔终端中执行：
+
+```bash
+cd /www/wwwroot/home
+ADMIN_TOKEN=your-strong-secret PORT=12446 PROJECT_ROOT=/www/wwwroot/home pm2 start admin-server/server.js --name home
+pm2 save
+```
+
+**步骤 6：配置反向代理**
+
+在宝塔面板中添加站点，绑定域名，并在站点设置中配置反向代理：
+
+- 目标 URL：`http://127.0.0.1:12446`
+- 发送域名：`$host`
+
+启动后访问：
+
+- 主站：`https://your-domain/`
+- 管理后台：`https://your-domain/admin`
+
+### 方式七：1Panel（1p）面板部署
+
+适用于已安装 1Panel 的服务器。推荐使用应用商店的 Docker 管理功能。
+
+**步骤 1：安装 Docker 与 Docker Compose**
+
+在 1Panel 的「容器」菜单中确认 Docker 已安装。
+
+**步骤 2：上传项目**
+
+将项目代码上传至服务器（如 `/opt/home`），或通过 1Panel 的文件管理上传。
+
+**步骤 3：配置环境变量**
+
+在 1Panel 文件管理中，复制 `scripts/.env.deploy.example` 为 `.env.deploy`，修改 `ADMIN_TOKEN`。
+
+**步骤 4：构建并启动**
+
+在 1Panel 终端中执行：
+
+```bash
+cd /opt/home
+docker compose --env-file .env.deploy up -d --build
+```
+
+或在 1Panel 的「容器 → 编排」中添加Compose 项目，指向 `/opt/home/docker-compose.yml`，环境变量文件选择 `/opt/home/.env.deploy`。
+
+**步骤 5：配置反向代理**
+
+在 1Panel 的「网站」中创建反代站点：
+
+- 代理地址：`http://127.0.0.1:12446`
+- 绑定域名并申请 SSL 证书
+
+启动后访问：
+
+- 主站：`https://your-domain/`
+- 管理后台：`https://your-domain/admin`
+
 <p>&nbsp;<p>
 
 ## 配置

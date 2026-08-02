@@ -140,7 +140,9 @@ sudo ADMIN_TOKEN=your-strong-secret ./scripts/deploy.sh deploy
 .\scripts\deploy.ps1 deploy
 ```
 
-脚本支持 `deploy`、`update`、`restart`、`backup`、`rollback` 等子命令。
+**Linux 脚本子命令**：`deploy`、`update`、`build`、`restart`、`stop`、`status`、`health`、`rollback`、`uninstall`、`help`
+
+**Windows 脚本子命令**：`deploy`、`build`、`start`、`stop`、`restart`、`status`、`health`、`clean`、`help`
 
 ### 方式三：手动部署
 
@@ -160,7 +162,10 @@ pnpm dev
 pnpm build
 ```
 
-构建完成后，静态资源会在 `dist` 目录中生成，可将 `dist` 文件夹下的文件上传至服务器。
+构建完成后，静态资源会在 `dist` 目录中生成。
+
+- **仅需静态站点**：将 `dist` 文件夹下的文件上传至服务器，用 Nginx 等托管即可
+- **需要管理后台**：还需启动 admin-server，参见下方"宝塔面板部署"步骤 4-5
 
 ### 方式四：Vercel 部署
 
@@ -207,7 +212,7 @@ npm install --omit=dev
 
 ```bash
 cd /www/wwwroot/home
-ADMIN_TOKEN=your-strong-secret PORT=12446 PROJECT_ROOT=/www/wwwroot/home pm2 start admin-server/server.js --name home
+ADMIN_TOKEN=your-strong-secret PORT=12446 pm2 start admin-server/server.js --name home
 pm2 save
 ```
 
